@@ -20,6 +20,12 @@
     user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
     headimg, invite_code, regist_code, user_state
   </sql>
+
+  <!--根据主键修改用户激活状态-->
+  <update id="updateStateByKey" parameterType="java.lang.Integer">
+    update from user set user_state=1 where user_id=#{userId}
+  </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -30,7 +36,7 @@
     delete from user
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
+  <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.User" useGeneratedKeys="true" keyProperty="userId">
     insert into user (user_id, user_name, password, 
       email, mobile, nickname, 
       regist_time, vip_state, vip_activetime, 

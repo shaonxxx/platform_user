@@ -1,5 +1,6 @@
 package com.woniu.woniuticket.platform_user;
 
+import com.woniu.woniuticket.platform_user.utils.UserUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ public class PlatformUserApplicationTests {
 
     @Test
     public void contextLoads() {
+        System.out.println(UserUtil.getRandomString(32));
     }
 
 }

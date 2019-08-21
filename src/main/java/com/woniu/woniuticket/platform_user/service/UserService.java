@@ -19,6 +19,7 @@ public interface UserService {
 
     int updateByPrimaryKey(User record);
 
+    int updateStateByKey(Integer userId);
 
 
 

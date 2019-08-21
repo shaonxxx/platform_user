@@ -82,4 +82,14 @@ public class UserServiceImpl implements UserService {
     public int updateByPrimaryKey(User record) {
         return userDao.updateByPrimaryKey(record);
     }
+
+    /**
+     * 根据主键修改用户激活状态
+     * @param userId
+     * @return
+     */
+    @Override
+    public int updateStateByKey(Integer userId) {
+        return userDao.updateStateByKey(userId);
+    }
 }
