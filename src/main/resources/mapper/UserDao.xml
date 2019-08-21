@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.woniuticket.platform_user.mapper.UserDao">
+  <resultMap id="BaseResultMap" type="com.woniu.woniuticket.platform_user.pojo.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="regist_time" jdbcType="TIMESTAMP" property="registTime" />
+    <result column="vip_state" jdbcType="TINYINT" property="vipState" />
+    <result column="vip_activetime" jdbcType="TIMESTAMP" property="vipActivetime" />
+    <result column="headimg" jdbcType="VARCHAR" property="headimg" />
+    <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
+    <result column="regist_code" jdbcType="VARCHAR" property="registCode" />
+    <result column="user_state" jdbcType="TINYINT" property="userState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
+    headimg, invite_code, regist_code, user_state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
+    insert into user (user_id, user_name, password, 
+      email, mobile, nickname, 
+      regist_time, vip_state, vip_activetime, 
+      headimg, invite_code, regist_code, 
+      user_state)
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
+      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=TINYINT}, #{vipActivetime,jdbcType=TIMESTAMP}, 
+      #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, 
+      #{userState,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="registTime != null">
+        regist_time,
+      </if>
+      <if test="vipState != null">
+        vip_state,
+      </if>
+      <if test="vipActivetime != null">
+        vip_activetime,
+      </if>
+      <if test="headimg != null">
+        headimg,
+      </if>
+      <if test="inviteCode != null">
+        invite_code,
+      </if>
+      <if test="registCode != null">
+        regist_code,
+      </if>
+      <if test="userState != null">
+        user_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="registTime != null">
+        #{registTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vipState != null">
+        #{vipState,jdbcType=TINYINT},
+      </if>
+      <if test="vipActivetime != null">
+        #{vipActivetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="headimg != null">
+        #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null">
+        #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registCode != null">
+        #{registCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        #{userState,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
+    update user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="registTime != null">
+        regist_time = #{registTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vipState != null">
+        vip_state = #{vipState,jdbcType=TINYINT},
+      </if>
+      <if test="vipActivetime != null">
+        vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="headimg != null">
+        headimg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null">
+        invite_code = #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registCode != null">
+        regist_code = #{registCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        user_state = #{userState,jdbcType=TINYINT},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
+    update user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      regist_time = #{registTime,jdbcType=TIMESTAMP},
+      vip_state = #{vipState,jdbcType=TINYINT},
+      vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
+      headimg = #{headimg,jdbcType=VARCHAR},
+      invite_code = #{inviteCode,jdbcType=VARCHAR},
+      regist_code = #{registCode,jdbcType=VARCHAR},
+      user_state = #{userState,jdbcType=TINYINT}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>
