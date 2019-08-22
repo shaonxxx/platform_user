@@ -17,6 +17,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Coupon findCouponByUserId(Integer userId) {
         Coupon coupon = couponDao.selectCouponByUserId(userId);
+        Date date=new Date();
         return  coupon;
     }
 
