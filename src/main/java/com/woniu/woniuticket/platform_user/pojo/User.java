@@ -28,7 +28,7 @@ public class User {
 
     private Date registTime;
 
-    private Byte vipState;
+    private Integer vipState;
 
     private Date vipActivetime;
 
@@ -38,7 +38,7 @@ public class User {
 
     private String registCode;
 
-    private Byte userState;
+    private Integer userState;
 
     public Integer getUserId() {
         return userId;
@@ -96,11 +96,11 @@ public class User {
         this.registTime = registTime;
     }
 
-    public Byte getVipState() {
+    public Integer getVipState() {
         return vipState;
     }
 
-    public void setVipState(Byte vipState) {
+    public void setVipState(Integer vipState) {
         this.vipState = vipState;
     }
 
@@ -136,18 +136,18 @@ public class User {
         this.registCode = registCode;
     }
 
-    public Byte getUserState() {
+    public Integer getUserState() {
         return userState;
     }
 
-    public void setUserState(Byte userState) {
+    public void setUserState(Integer userState) {
         this.userState = userState;
     }
 
     @Override
     public String toString() {
-        return "\nUser{\n" +
-                "userId=" + userId +
+        return "User{\n" +
+                "\nuserId=" + userId +
                 ", \nuserName='" + userName + '\'' +
                 ", \npassword='" + password + '\'' +
                 ", \nemail='" + email + '\'' +

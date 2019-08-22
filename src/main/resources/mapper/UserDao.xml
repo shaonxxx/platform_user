@@ -9,12 +9,12 @@
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="regist_time" jdbcType="TIMESTAMP" property="registTime" />
-    <result column="vip_state" jdbcType="TINYINT" property="vipState" />
+    <result column="vip_state" jdbcType="INTEGER" property="vipState" />
     <result column="vip_activetime" jdbcType="TIMESTAMP" property="vipActivetime" />
     <result column="headimg" jdbcType="VARCHAR" property="headimg" />
     <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
     <result column="regist_code" jdbcType="VARCHAR" property="registCode" />
-    <result column="user_state" jdbcType="TINYINT" property="userState" />
+    <result column="user_state" jdbcType="INTEGER" property="userState" />
   </resultMap>
   <sql id="Base_Column_List">
     user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
@@ -23,8 +23,66 @@
 
   <!--根据主键修改用户激活状态-->
   <update id="updateStateByKey" parameterType="java.lang.Integer">
-    update from user set user_state=1 where user_id=#{userId}
+    update user set user_state=1 where user_id=#{userId}
   </update>
+  <!--根据用户名查找用户-->
+  <select id="selectUserByName" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
+    select * from user where user_name=#{userName}
+  </select>
+  <!--根据邮箱查找用户-->
+  <select id="selectUserByEmail" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
+    select * from user where email=#{email}
+  </select>
+  <!--根据手机查找用户-->
+  <select id="selectUserByMobile" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
+    select * from user where mobile=#{mobile}
+  </select>
+
+
+
+
+  <!--根据手机、用户名、邮箱动态查找-->
+  <select id="selectUserByChoose" resultType="com.woniu.woniuticket.platform_user.pojo.User">
+    select * from user
+    <where>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="registTime != null">
+        regist_time = #{registTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vipState != null">
+        vip_state = #{vipState,jdbcType=INTEGER},
+      </if>
+      <if test="vipActivetime != null">
+        vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="headimg != null">
+        headimg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null">
+        invite_code = #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registCode != null">
+        regist_code = #{registCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        user_state = #{userState,jdbcType=INTEGER},
+      </if>
+    </where>
+  </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -44,9 +102,9 @@
       user_state)
     values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
-      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=TINYINT}, #{vipActivetime,jdbcType=TIMESTAMP}, 
+      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=INTEGER}, #{vipActivetime,jdbcType=TIMESTAMP},
       #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, 
-      #{userState,jdbcType=TINYINT})
+      #{userState,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
     insert into user
@@ -114,7 +172,7 @@
         #{registTime,jdbcType=TIMESTAMP},
       </if>
       <if test="vipState != null">
-        #{vipState,jdbcType=TINYINT},
+        #{vipState,jdbcType=INTEGER},
       </if>
       <if test="vipActivetime != null">
         #{vipActivetime,jdbcType=TIMESTAMP},
@@ -129,7 +187,7 @@
         #{registCode,jdbcType=VARCHAR},
       </if>
       <if test="userState != null">
-        #{userState,jdbcType=TINYINT},
+        #{userState,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -155,7 +213,7 @@
         regist_time = #{registTime,jdbcType=TIMESTAMP},
       </if>
       <if test="vipState != null">
-        vip_state = #{vipState,jdbcType=TINYINT},
+        vip_state = #{vipState,jdbcType=INTEGER},
       </if>
       <if test="vipActivetime != null">
         vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
@@ -170,7 +228,7 @@
         regist_code = #{registCode,jdbcType=VARCHAR},
       </if>
       <if test="userState != null">
-        user_state = #{userState,jdbcType=TINYINT},
+        user_state = #{userState,jdbcType=INTEGER},
       </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
@@ -183,12 +241,12 @@
       mobile = #{mobile,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
       regist_time = #{registTime,jdbcType=TIMESTAMP},
-      vip_state = #{vipState,jdbcType=TINYINT},
+      vip_state = #{vipState,jdbcType=INTEGER},
       vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
       headimg = #{headimg,jdbcType=VARCHAR},
       invite_code = #{inviteCode,jdbcType=VARCHAR},
       regist_code = #{registCode,jdbcType=VARCHAR},
-      user_state = #{userState,jdbcType=TINYINT}
+      user_state = #{userState,jdbcType=INTEGER}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -3,9 +3,11 @@ package com.woniu.woniuticket.platform_user.service;
 import com.woniu.woniuticket.platform_user.pojo.User;
 
 public interface UserService {
+    User findUserByEmail(String userName);
 
+    User findUserByChoose(User user);
 
-    public User findUserByName(String userName);
+    User findUserByName(String userName);
 
     int removeByPrimaryKey(Integer userId);
 
@@ -21,7 +23,5 @@ public interface UserService {
 
     int updateStateByKey(Integer userId);
 
-
-
-
+    User findUserByMobile(String userName);
 }

@@ -3,6 +3,8 @@ package com.woniu.woniuticket.platform_user.mapper;
 import com.woniu.woniuticket.platform_user.pojo.User;
 
 public interface UserDao {
+    User selectUserByName(String userName);
+
     int deleteByPrimaryKey(Integer userId);
 
     int insert(User record);
@@ -16,4 +18,10 @@ public interface UserDao {
     int updateByPrimaryKey(User record);
 
     int updateStateByKey(Integer userId);
+
+    User selectUserByChoose(User user);
+
+    User selectUserByEmail(String email);
+
+    User selectUserByMobile(String mobile);
 }

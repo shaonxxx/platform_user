@@ -25,7 +25,7 @@ public class UserUtil {
 
     /**
      * 生成32位随机邀请码
-     * @param length
+     * @param length  生成随机码的长度
      * @return
      */
     public static String getRandomString(int length){
