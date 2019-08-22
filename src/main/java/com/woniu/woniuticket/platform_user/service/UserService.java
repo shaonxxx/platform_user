@@ -1,11 +1,16 @@
 package com.woniu.woniuticket.platform_user.service;
 
+
 import com.woniu.woniuticket.platform_user.pojo.User;
+import com.woniu.woniuticket.platform_user.vo.UserVo;
+
+import java.util.Date;
+import java.util.List;
 
 public interface UserService {
 
 
-    public User findUserByName(String userName);
+    User findUserByName(String userName);
 
     int removeByPrimaryKey(Integer userId);
 
@@ -19,7 +24,7 @@ public interface UserService {
 
     int updateByPrimaryKey(User record);
 
-
+    List<User> findUserByPage(Integer pageSize, Integer currentPage, UserVo userVo);
 
 
 

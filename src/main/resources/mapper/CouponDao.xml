@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.woniuticket.platform_user.mapper.CouponDao">
+  <resultMap id="BaseResultMap" type="com.woniu.woniuticket.platform_user.pojo.Coupon">
+    <id column="coupon_id" jdbcType="INTEGER" property="couponId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="amount" jdbcType="REAL" property="amount" />
+    <result column="active_time" jdbcType="TIMESTAMP" property="activeTime" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    coupon_id, user_id, amount, active_time, num, state
+  </sql>
+  <select id="selectCouponOut" resultMap="BaseResultMap">
+    select * from coupon where <![CDATA[ active_time < now()  ]]> and state = 0;
+  </select>
+
+  <select id="countCouponByUserId" resultType="java.lang.Integer">
+    select num from coupon where user_id = #{userId} and state =0
+  </select>
+
+  <select id="selectCouponByUserId" resultMap="BaseResultMap">
+    select * from coupon where user_id = #{userId} and state !=2
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coupon
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.Coupon">
+    insert into coupon (coupon_id, user_id, amount,
+      active_time, num, state
+      )
+    values (#{couponId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{amount,jdbcType=REAL},
+      #{activeTime,jdbcType=TIMESTAMP}, #{num,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.Coupon">
+    insert into coupon
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="couponId != null">
+        coupon_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="activeTime != null">
+        active_time,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="couponId != null">
+        #{couponId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=REAL},
+      </if>
+      <if test="activeTime != null">
+        #{activeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.woniu.woniuticket.platform_user.pojo.Coupon">
+    update coupon
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=REAL},
+      </if>
+      <if test="activeTime != null">
+        active_time = #{activeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.woniu.woniuticket.platform_user.pojo.Coupon">
+    update coupon
+    set user_id = #{userId,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=REAL},
+      active_time = #{activeTime,jdbcType=TIMESTAMP},
+      num = #{num,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER}
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </update>
+</mapper>

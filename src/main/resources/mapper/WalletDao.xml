@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.woniuticket.platform_user.mapper.WalletDao">
+  <resultMap id="BaseResultMap" type="com.woniu.woniuticket.platform_user.pojo.Wallet">
+    <id column="wallet_id" jdbcType="INTEGER" property="walletId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="res_amount" jdbcType="DECIMAL" property="resAmount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    wallet_id, user_id, res_amount
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wallet
+    where wallet_id = #{walletId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from wallet
+    where wallet_id = #{walletId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.Wallet">
+    insert into wallet (wallet_id, user_id, res_amount
+      )
+    values (#{walletId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{resAmount,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.Wallet">
+    insert into wallet
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="walletId != null">
+        wallet_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="resAmount != null">
+        res_amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="walletId != null">
+        #{walletId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="resAmount != null">
+        #{resAmount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.woniu.woniuticket.platform_user.pojo.Wallet">
+    update wallet
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="resAmount != null">
+        res_amount = #{resAmount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where wallet_id = #{walletId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.woniu.woniuticket.platform_user.pojo.Wallet">
+    update wallet
+    set user_id = #{userId,jdbcType=INTEGER},
+      res_amount = #{resAmount,jdbcType=DECIMAL}
+    where wallet_id = #{walletId,jdbcType=INTEGER}
+  </update>
+</mapper>

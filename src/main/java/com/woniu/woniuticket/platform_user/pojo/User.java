@@ -9,25 +9,25 @@ public class User {
 
     private String password;
 
-    private String email;
-
     private String mobile;
 
     private String nickname;
 
     private Date registTime;
 
-    private Byte vipState;
+    private Integer vipState;
 
     private Date vipActivetime;
 
-    private String headimg;
+    private String heading;
 
     private String inviteCode;
 
     private String registCode;
 
-    private Byte userState;
+    private Integer userState;
+
+    private String email;
 
     public Integer getUserId() {
         return userId;
@@ -51,14 +51,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getMobile() {
@@ -85,11 +77,11 @@ public class User {
         this.registTime = registTime;
     }
 
-    public Byte getVipState() {
+    public Integer getVipState() {
         return vipState;
     }
 
-    public void setVipState(Byte vipState) {
+    public void setVipState(Integer vipState) {
         this.vipState = vipState;
     }
 
@@ -101,12 +93,12 @@ public class User {
         this.vipActivetime = vipActivetime;
     }
 
-    public String getHeadimg() {
-        return headimg;
+    public String getHeading() {
+        return heading;
     }
 
-    public void setHeadimg(String headimg) {
-        this.headimg = headimg;
+    public void setHeading(String heading) {
+        this.heading = heading;
     }
 
     public String getInviteCode() {
@@ -125,11 +117,38 @@ public class User {
         this.registCode = registCode;
     }
 
-    public Byte getUserState() {
+    public Integer getUserState() {
         return userState;
     }
 
-    public void setUserState(Byte userState) {
+    public void setUserState(Integer userState) {
         this.userState = userState;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", registTime=" + registTime +
+                ", vipState=" + vipState +
+                ", vipActivetime=" + vipActivetime +
+                ", heading='" + heading + '\'' +
+                ", inviteCode='" + inviteCode + '\'' +
+                ", registCode='" + registCode + '\'' +
+                ", userState=" + userState +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

@@ -17,11 +17,30 @@
     <result column="user_state" jdbcType="TINYINT" property="userState" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
+    user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime,
     headimg, invite_code, regist_code, user_state
   </sql>
+
+  <select id="selectUserByPage" resultMap="BaseResultMap">
+    select * from user
+    <where>
+      <if test="userVo !=null">
+        <if test="userVo.userName != null and '' != userVo.userName">
+          user_name like '%' #{userVo.userName} '%'
+        </if>
+        <if test="userVo.registTime != null">
+          order by regist_time = #{userVo.registTime} desc
+        </if>
+      </if>
+    </where>
+  </select>
+
+  <select id="selectUserByUserName" resultMap="BaseResultMap">
+    select * from user where user_name = #{userName}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from user
     where user_id = #{userId,jdbcType=INTEGER}
@@ -31,15 +50,15 @@
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
-    insert into user (user_id, user_name, password, 
-      email, mobile, nickname, 
-      regist_time, vip_state, vip_activetime, 
-      headimg, invite_code, regist_code, 
+    insert into user (user_id, user_name, password,
+      email, mobile, nickname,
+      regist_time, vip_state, vip_activetime,
+      headimg, invite_code, regist_code,
       user_state)
-    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
-      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=TINYINT}, #{vipActivetime,jdbcType=TIMESTAMP}, 
-      #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, 
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
+      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=TINYINT}, #{vipActivetime,jdbcType=TIMESTAMP},
+      #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR},
       #{userState,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">

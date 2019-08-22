@@ -8,7 +8,7 @@
             <property name="suppressAllComments" value="true" />
         </commentGenerator>
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/a_user"
+                        connectionURL="jdbc:mysql://localhost:3306/cinema"
                         userId="root" password="123">
         </jdbcConnection>
         <!--存放生成实体类的路径-->
@@ -24,7 +24,6 @@
                enableSelectByExample="false"
                enableCountByExample="false"
                selectByExampleQueryId="false">
-
         </table>
     </context>
 </generatorConfiguration>
