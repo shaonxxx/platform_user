@@ -9,6 +9,16 @@ spring:
     time-zone: GMT+8
   mvc:
     date-format: yyyy-MM-dd
+  mail:
+    host: smtp.163.com
+    username: snail_gclq@163.com
+    password: gclq527051056
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
 mybatis:
   mapper-locations: classpath:/mapper/*.xml
   configuration:

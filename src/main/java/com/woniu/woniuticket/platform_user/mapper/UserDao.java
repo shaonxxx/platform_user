@@ -19,8 +19,12 @@ public interface UserDao {
 
     int updateByPrimaryKey(User record);
 
+
     User selectUserByUserName(String userName);
 
     List<User> selectUserByPage(@Param("pageSize") Integer pageSize, @Param("currentPage") Integer currentPage,
                                 @Param("userVo") UserVo userVo);
+
+    int updateStateByKey(Integer userId);
+
 }

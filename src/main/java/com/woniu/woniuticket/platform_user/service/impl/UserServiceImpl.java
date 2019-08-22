@@ -87,6 +87,16 @@ public class UserServiceImpl implements UserService {
         return userDao.updateByPrimaryKey(record);
     }
 
+    /**
+     * 根据主键修改用户激活状态
+     * @param userId
+     * @return
+     */
+    @Override
+    public int updateStateByKey(Integer userId) {
+        return userDao.updateStateByKey(userId);
+    }
+
 
     /*
     * 分页，按条件查询user
