@@ -3,8 +3,12 @@ package com.woniu.woniuticket.platform_user.service.impl;
 import com.woniu.woniuticket.platform_user.mapper.UserDao;
 import com.woniu.woniuticket.platform_user.pojo.User;
 import com.woniu.woniuticket.platform_user.service.UserService;
+import com.woniu.woniuticket.platform_user.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -50,7 +54,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findUserByName(String userName) {
-        return userDao.selectUserByName(userName);
+        return null;
     }
 
     /**
@@ -124,4 +128,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /*
+    * 分页，按条件查询user
+    *
+    * */
+
+    @Override
+    public List<User> findUserByPage(Integer pageSize, Integer currentPage, UserVo userVo) {
+        return userDao.selectUserByPage(pageSize,currentPage,userVo);
+    }
 }

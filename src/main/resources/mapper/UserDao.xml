@@ -84,6 +84,25 @@
     </where>
   </select>
 
+
+  <select id="selectUserByPage" resultMap="BaseResultMap">
+    select * from user
+    <where>
+      <if test="userVo !=null">
+        <if test="userVo.userName != null and '' != userVo.userName">
+          user_name like '%' #{userVo.userName} '%'
+        </if>
+        <if test="userVo.registTime != null">
+          order by regist_time = #{userVo.registTime} desc
+        </if>
+      </if>
+    </where>
+  </select>
+
+  <select id="selectUserByUserName" resultMap="BaseResultMap">
+    select * from user where user_name = #{userName}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

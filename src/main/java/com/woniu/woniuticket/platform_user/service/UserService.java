@@ -21,6 +21,7 @@ public interface UserService {
 
     int updateByPrimaryKey(User record);
 
+    List<User> findUserByPage(Integer pageSize, Integer currentPage, UserVo userVo);
     int updateStateByKey(Integer userId);
 
     User findUserByMobile(String userName);
