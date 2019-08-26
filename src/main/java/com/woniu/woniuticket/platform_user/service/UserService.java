@@ -1,6 +1,9 @@
 package com.woniu.woniuticket.platform_user.service;
 
 import com.woniu.woniuticket.platform_user.pojo.User;
+import com.woniu.woniuticket.platform_user.vo.UserVo;
+
+import java.util.List;
 
 public interface UserService {
     User findUserByEmail(String userName);
