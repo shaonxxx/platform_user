@@ -18,13 +18,43 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     /**
+     * 根据手机号查找用户
+     * @param mobile
+     * @return
+     */
+    @Override
+    public User findUserByMobile(String mobile) {
+        return userDao.selectUserByMobile(mobile);
+    }
+
+    /**
+     * 根据邮箱查找用户
+     * @param email
+     * @return
+     */
+    @Override
+    public User findUserByEmail(String email) {
+        return userDao.selectUserByEmail(email);
+    }
+
+    /**
+     * 根据条件动态查询
+     * @param user
+     * @return
+     */
+    @Override
+    public User findUserByChoose(User user){
+        return  userDao.selectUserByChoose(user);
+    }
+
+    /**
      * 根据用户姓名查找用户
      * @param userName
      * @return
      */
     @Override
     public User findUserByName(String userName) {
-        return userDao.selectUserByUserName(userName);
+        return null;
     }
 
     /**
@@ -127,7 +157,6 @@ public class UserServiceImpl implements UserService {
     * 分页，按条件查询user
     *
     * */
-
     @Override
     public List<User> findUserByPage(Integer pageSize, Integer currentPage, UserVo userVo) {
         return userDao.selectUserByPage(pageSize,currentPage,userVo);

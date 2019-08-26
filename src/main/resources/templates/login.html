@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
-    <script src="../static/jquery.min.js"></script>
+    <script src="/static/jquery.min.js"></script>
     <script src="../static/vue.js"></script>
+    <script>
+        var message = [[${message}]];
+        if(message.length>0){
+            alert(massage);
+        }
+
+    </script>
 </head>
 <body>
-<form id="login" action="/user" method="get">
+<form id="login" action="/user" method="post">
     <table>
         <tr>
             <td>账户：</td>
-            <td><input name="userName" type="text" placeholder="用户名/电子邮箱/手机"></td>
+            <td><input name="loginName" type="text" placeholder="用户名/电子邮箱/手机"></td>
         </tr>
         <tr>
             <td>密码</td>

@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface UserDao {
+    User selectUserByName(String userName);
+
     int deleteByPrimaryKey(Integer userId);
 
     int insert(User record);
@@ -27,4 +29,9 @@ public interface UserDao {
 
     int updateStateByKey(Integer userId);
 
+    User selectUserByChoose(User user);
+
+    User selectUserByEmail(String email);
+
+    User selectUserByMobile(String mobile);
 }

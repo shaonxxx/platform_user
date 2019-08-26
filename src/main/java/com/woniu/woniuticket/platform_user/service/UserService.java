@@ -6,9 +6,11 @@ import com.woniu.woniuticket.platform_user.vo.UserVo;
 import java.util.List;
 
 public interface UserService {
+    User findUserByEmail(String userName);
 
+    User findUserByChoose(User user);
 
-    public User findUserByName(String userName);
+    User findUserByName(String userName);
 
     int removeByPrimaryKey(Integer userId);
 
@@ -26,6 +28,7 @@ public interface UserService {
 
     int updateStateByKey(Integer userId);
 
+    User findUserByMobile(String userName);
 
     User findUserByUserId(Integer userId);
 
