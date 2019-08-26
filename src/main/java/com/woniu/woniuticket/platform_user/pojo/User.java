@@ -1,44 +1,33 @@
 package com.woniu.woniuticket.platform_user.pojo;
 
-import javax.validation.constraints.*;
 import java.util.Date;
 
 public class User {
     private Integer userId;
 
-    @NotNull(message = "姓名不能为空")
-//    @NotEmpty(message ="用户名不能为空")
-    @Size(min = 6,max = 20,message = "用户名长度为{min}-{max}")
     private String userName;
 
-    @NotEmpty(message ="密码不能为空")
-//    @NotNull(message = "密码不能为空")
     private String password;
 
-    @NotEmpty(message = "邮箱不能为空")
-    @Email(message = "邮箱格式错误")
-    private String email;
-
-    @NotEmpty(message ="手机号不能为空")
-    @Pattern(regexp = "^1[38]\\d{9}$",message = "手机号码格式不正确")
     private String mobile;
-
-    @NotNull(message ="昵称不能为空")
+    //昵称
     private String nickname;
-
+    //注册时间
     private Date registTime;
-
+    //VIP状态
     private Integer vipState;
-
+    //VIP到期时间
     private Date vipActivetime;
-
+    //头像
     private String headimg;
-
+    //邀请码
     private String inviteCode;
-
+    //注册码
     private String registCode;
 
     private Integer userState;
+
+    private String email;
 
     public Integer getUserId() {
         return userId;
@@ -62,14 +51,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getMobile() {
@@ -142,5 +123,13 @@ public class User {
 
     public void setUserState(Integer userState) {
         this.userState = userState;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

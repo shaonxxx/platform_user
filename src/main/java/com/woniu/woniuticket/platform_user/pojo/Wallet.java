@@ -4,7 +4,7 @@ public class Wallet {
     private Integer walletId;
 
     private Integer userId;
-
+    //余额
     private Long resAmount;
 
     public Integer getWalletId() {

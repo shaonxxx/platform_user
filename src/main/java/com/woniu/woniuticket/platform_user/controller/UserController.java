@@ -5,7 +5,6 @@ import com.woniu.woniuticket.platform_user.service.UserService;
 import com.woniu.woniuticket.platform_user.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -69,8 +68,8 @@ public class UserController {
         //设置用户32位邀请码
         user.setInviteCode(UserUtil.getRandomString(32));
         user.setRegistTime(new Date());
-        user.setVipState((byte)0);
-        user.setUserState((byte)0);
+        user.setVipState(0);
+        user.setUserState(0);
         System.out.println("\n最终插入数据："+user);
         int message = userService.insert(user);
         if (message==1){

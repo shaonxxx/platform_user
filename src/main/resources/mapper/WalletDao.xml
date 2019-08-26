@@ -9,6 +9,10 @@
   <sql id="Base_Column_List">
     wallet_id, user_id, res_amount
   </sql>
+  <select id="selectWalletByUserId" resultMap="BaseResultMap">
+    select * from wallet where user_id = #{userId}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

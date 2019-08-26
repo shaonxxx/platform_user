@@ -3,6 +3,8 @@ package com.woniu.woniuticket.platform_user.mapper;
 
 import com.woniu.woniuticket.platform_user.pojo.Coupon;
 
+import java.util.List;
+
 public interface CouponDao {
     int deleteByPrimaryKey(Integer couponId);
 
@@ -16,9 +18,9 @@ public interface CouponDao {
 
     int updateByPrimaryKey(Coupon record);
 
-    Coupon selectCouponByUserId(Integer userId);
+    List<Coupon> selectCouponByUserId(Integer userId);
 
     int countCouponByUserId(Integer userId);
 
-    Coupon selectCouponOut(Integer userId);
+    List<Coupon> selectCouponOut(Integer userId);
 }

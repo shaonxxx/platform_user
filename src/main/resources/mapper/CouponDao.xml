@@ -5,8 +5,7 @@
     <id column="coupon_id" jdbcType="INTEGER" property="couponId" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="amount" jdbcType="REAL" property="amount" />
-    <result column="active_time" jdbcType="TIMESTAMP" property="activeTime" />
-    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="active_time" jdbcType="DATE" property="activeTime" />
     <result column="state" jdbcType="INTEGER" property="state" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -17,7 +16,7 @@
   </select>
 
   <select id="countCouponByUserId" resultType="java.lang.Integer">
-    select num from coupon where user_id = #{userId} and state =0
+    select count(*) from coupon where user_id = #{userId} and state =0
   </select>
 
   <select id="selectCouponByUserId" resultMap="BaseResultMap">
@@ -36,10 +35,10 @@
   </delete>
   <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.Coupon">
     insert into coupon (coupon_id, user_id, amount,
-      active_time, num, state
+      active_time, state
       )
     values (#{couponId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{amount,jdbcType=REAL},
-      #{activeTime,jdbcType=TIMESTAMP}, #{num,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}
+      #{activeTime,jdbcType=DATE},  #{state,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.Coupon">
@@ -97,9 +96,6 @@
       <if test="activeTime != null">
         active_time = #{activeTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="num != null">
-        num = #{num,jdbcType=INTEGER},
-      </if>
       <if test="state != null">
         state = #{state,jdbcType=INTEGER},
       </if>
@@ -111,7 +107,6 @@
     set user_id = #{userId,jdbcType=INTEGER},
       amount = #{amount,jdbcType=REAL},
       active_time = #{activeTime,jdbcType=TIMESTAMP},
-      num = #{num,jdbcType=INTEGER},
       state = #{state,jdbcType=INTEGER}
     where coupon_id = #{couponId,jdbcType=INTEGER}
   </update>

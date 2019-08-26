@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.woniuticket.platform_user.mapper.WalletOrderDao">
+  <resultMap id="BaseResultMap" type="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
+    <id column="wallet_order_id" jdbcType="INTEGER" property="walletOrderId" />
+    <result column="wallet_order_createtime" jdbcType="DATE" property="walletOrderCreatetime" />
+    <result column="wallet_order_money" jdbcType="DECIMAL" property="walletOrderMoney" />
+    <result column="wallet_order_state" jdbcType="INTEGER" property="walletOrderState" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="wallet_order_type" jdbcType="INTEGER" property="walletOrderType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    wallet_order_id, wallet_order_createtime, wallet_order_money, wallet_order_state, 
+    user_id
+  </sql>
+
+  <select id="selectVipOrderByTime" resultMap="BaseResultMap">
+    select * from wallet_order where wallet_order_type = 2 and wallet_order_state != 2 and
+    user_id = #{userId} order by wallet_order_createtime desc
+  </select>
+
+  <select id="selectOrderList" resultMap="BaseResultMap">
+    select * from wallet_order where user_id = #{userId} order by wallet_order_createtime desc
+  </select>
+
+  <select id="selectChargeOrderByTime" resultMap="BaseResultMap">
+    select * from wallet_order where user_id = #{userId} and wallet_order_state != 2 and
+    wallet_order_type = 3 order by wallet_order_createtime desc
+  </select>
+
+  <select id="selectReduceOrderByTime" resultMap="BaseResultMap">
+    select * from wallet_order where user_id = #{userId} and wallet_order_state != 2 and
+    wallet_order_type != 3 order by wallet_order_createtime desc
+  </select>
+
+  <select id="selectOrderByUserId" resultMap="BaseResultMap">
+    select * from wallet_order where user_id = #{userId}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_order
+    where wallet_order_id = #{walletOrderId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from wallet_order
+    where wallet_order_id = #{walletOrderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
+    insert into wallet_order (wallet_order_id, wallet_order_createtime, 
+      wallet_order_money, wallet_order_state, user_id
+      )
+    values (#{walletOrderId,jdbcType=INTEGER}, #{walletOrderCreatetime,jdbcType=DATE},
+      #{walletOrderMoney,jdbcType=DECIMAL}, #{walletOrderState,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
+    insert into wallet_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="walletOrderId != null">
+        wallet_order_id,
+      </if>
+      <if test="walletOrderCreatetime != null">
+        wallet_order_createtime,
+      </if>
+      <if test="walletOrderMoney != null">
+        wallet_order_money,
+      </if>
+      <if test="walletOrderState != null">
+        wallet_order_state,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="walletOrderId != null">
+        #{walletOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="walletOrderCreatetime != null">
+        #{walletOrderCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="walletOrderMoney != null">
+        #{walletOrderMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="walletOrderState != null">
+        #{walletOrderState,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
+    update wallet_order
+    <set>
+      <if test="walletOrderCreatetime != null">
+        wallet_order_createtime = #{walletOrderCreatetime,jdbcType=DATE},
+      </if>
+      <if test="walletOrderMoney != null">
+        wallet_order_money = #{walletOrderMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="walletOrderState != null">
+        wallet_order_state = #{walletOrderState,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where wallet_order_id = #{walletOrderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
+    update wallet_order
+    set wallet_order_createtime = #{walletOrderCreatetime,jdbcType=DATE},
+      wallet_order_money = #{walletOrderMoney,jdbcType=DECIMAL},
+      wallet_order_state = #{walletOrderState,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER}
+    where wallet_order_id = #{walletOrderId,jdbcType=INTEGER}
+  </update>
+</mapper>

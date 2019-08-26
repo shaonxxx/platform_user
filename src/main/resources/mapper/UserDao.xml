@@ -10,7 +10,7 @@
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="regist_time" jdbcType="TIMESTAMP" property="registTime" />
     <result column="vip_state" jdbcType="TINYINT" property="vipState" />
-    <result column="vip_activetime" jdbcType="TIMESTAMP" property="vipActivetime" />
+    <result column="vip_activetime" jdbcType="DATE" property="vipActivetime" />
     <result column="headimg" jdbcType="VARCHAR" property="headimg" />
     <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
     <result column="regist_code" jdbcType="VARCHAR" property="registCode" />
@@ -63,9 +63,9 @@
       user_state)
     values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
-      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=TINYINT}, #{vipActivetime,jdbcType=TIMESTAMP}, 
+      #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=INTEGER}, #{vipActivetime,jdbcType=DATE},
       #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, 
-      #{userState,jdbcType=TINYINT})
+      #{userState,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
     insert into user
@@ -133,10 +133,10 @@
         #{registTime,jdbcType=TIMESTAMP},
       </if>
       <if test="vipState != null">
-        #{vipState,jdbcType=TINYINT},
+        #{vipState,jdbcType=INTEGER},
       </if>
       <if test="vipActivetime != null">
-        #{vipActivetime,jdbcType=TIMESTAMP},
+        #{vipActivetime,jdbcType=DATE},
       </if>
       <if test="headimg != null">
         #{headimg,jdbcType=VARCHAR},
@@ -148,7 +148,7 @@
         #{registCode,jdbcType=VARCHAR},
       </if>
       <if test="userState != null">
-        #{userState,jdbcType=TINYINT},
+        #{userState,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -174,10 +174,10 @@
         regist_time = #{registTime,jdbcType=TIMESTAMP},
       </if>
       <if test="vipState != null">
-        vip_state = #{vipState,jdbcType=TINYINT},
+        vip_state = #{vipState,jdbcType=INTEGER},
       </if>
       <if test="vipActivetime != null">
-        vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
+        vip_activetime = #{vipActivetime,jdbcType=DATE},
       </if>
       <if test="headimg != null">
         headimg = #{headimg,jdbcType=VARCHAR},
@@ -189,7 +189,7 @@
         regist_code = #{registCode,jdbcType=VARCHAR},
       </if>
       <if test="userState != null">
-        user_state = #{userState,jdbcType=TINYINT},
+        user_state = #{userState,jdbcType=INTEGER},
       </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
@@ -202,12 +202,12 @@
       mobile = #{mobile,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
       regist_time = #{registTime,jdbcType=TIMESTAMP},
-      vip_state = #{vipState,jdbcType=TINYINT},
+      vip_state = #{vipState,jdbcType=INTEGER},
       vip_activetime = #{vipActivetime,jdbcType=TIMESTAMP},
       headimg = #{headimg,jdbcType=VARCHAR},
       invite_code = #{inviteCode,jdbcType=VARCHAR},
       regist_code = #{registCode,jdbcType=VARCHAR},
-      user_state = #{userState,jdbcType=TINYINT}
+      user_state = #{userState,jdbcType=INTEGER}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 </mapper>

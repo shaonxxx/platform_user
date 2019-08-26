@@ -97,6 +97,31 @@ public class UserServiceImpl implements UserService {
         return userDao.updateStateByKey(userId);
     }
 
+    @Override
+    public User findUserByUserId(Integer userId) {
+        return userDao.selectByPrimaryKey(userId);
+    }
+
+    @Override
+    public int modifyUserInfo(User user) {
+        User dbuser = userDao.selectByPrimaryKey(user.getUserId());
+        if(dbuser!=null){
+            if(!dbuser.getUserId().equals(user.getUserId())){
+                if(dbuser.getUserName().equals(user.getUserName())) {
+                    //用户名已存在
+                    return -1;
+                }if(dbuser.getMobile().equals(user.getMobile())){
+                    //手机号已存在
+                    return -2;
+                }if(dbuser.getNickname().equals(user.getNickname())){
+                    //昵称已存在
+                    return -3;
+                }
+            }
+        }
+        return userDao.updateByPrimaryKeySelective(user);
+    }
+
 
     /*
     * 分页，按条件查询user
