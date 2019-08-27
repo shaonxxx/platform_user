@@ -7,6 +7,7 @@ import com.woniu.woniuticket.platform_user.service.UserService;
 import com.woniu.woniuticket.platform_user.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -16,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,51 +31,54 @@ public class UserController {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private WalletController walletController;
+
     /**
      * 用户注册
      * @param user
      * @param br
      * @return
      */
+    @Transactional
     @PostMapping("/user")
     public String userRegisty(@RequestBody @Validated User user, BindingResult br){ //@Validated
 //        ModelAndView mv = new ModelAndView();
         Map<String,Object> verify = new HashMap();
         System.out.println("**********进入注册方法**********");
         System.out.println("接收的参数："+user);
-        //获取错误信息的总数
-        int errorCount = br.getErrorCount();
-        //格式验证
-        if(errorCount>0) {
-            //获取那些错误消息字段
-            FieldError nameError = br.getFieldError("userName");
-            FieldError pwdError = br.getFieldError("password");
-            FieldError emailError = br.getFieldError("email");
-            FieldError mobileError = br.getFieldError("mobile");
-            FieldError nicknameError = br.getFieldError("nickname");
-            if (nameError != null) {
-                //将验证的错误消息存进ModelAndView
-                verify.put("nameError", nameError.getDefaultMessage());
-            }
-            if (pwdError != null) {
-                verify.put("pwdError", pwdError.getDefaultMessage());
-            }
-            if (emailError != null) {
-                verify.put("emailError", emailError.getDefaultMessage());
-            }
-            if (mobileError != null) {
-                verify.put("mobileError", mobileError.getDefaultMessage());
-            }
-            if (nicknameError != null) {
-                verify.put("nicknameError", nicknameError.getDefaultMessage());
-            }
-
-            return JSON.toJSONString(verify);
-//            mv.setViewName(UserConstant.REGISTRY);
-//            return mv;
+        String result = fomatVerify(verify,br);
+        if(result!=null){
+            return result;
         }
+        result = dataVerify(user,verify);
+        if(result!=null){
+            return result;
+        }
+
         if(user.getRegistCode()!=null && user.getRegistCode()!=""){
             System.out.println("有注册码");
+            //根据注册码查找父用户
+            User findUser = userService.findUserByRegistCode(user.getRegistCode());
+            if (findUser!=null){
+                Map error = walletController.createWallet(findUser.getUserId());
+            }
+
+
+            //修改策略，使用事务控制插入用户与同生钱包
+
+
+
+
+
+//            if(result!=null){
+//                return result;
+//            }
+//            result = dataVerify(user,verify);
+//            if(result!=null){
+//                return result;
+//            }
+
             /*
                 这里处理有注册码的情况，
                 比如优惠券
@@ -92,25 +95,18 @@ public class UserController {
                 so，这段代码需要放在插入语句之后
 
              */
+//        }else{
+//            if(result!=null){
+//                return result;
+//            }
+//            result = dataVerify(user,verify);
+//            if(result!=null){
+//                return result;
+//            }
         }
-        System.out.println();
-        User findUserByName = userService.findUserByName(user.getUserName());
-        User findUserByEmail = userService.findUserByEmail(user.getEmail());
-        User findUserByMobile = userService.findUserByMobile(user.getMobile());
-        //数据验证
-        if(findUserByName!=null){
-            if(user.getUserName().equals(findUserByName.getUserName())){
-                verify.put("nameError", "用户名已被注册");
-            }
-            if(user.getEmail().equals(findUserByEmail.getEmail())){
-                verify.put("emailError", "邮箱已被注册");
-            }
-            if(user.getMobile().equals(findUserByMobile.getMobile())){
-                verify.put("mobileError", "该手机已被注册");
-            }
-//            mv.setViewName(UserConstant.REGISTRY);
-            return JSON.toJSONString(verify);
-        }
+
+
+
         //对传入密码进行md5加密
         String md5Password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
         user.setPassword(md5Password);
@@ -121,6 +117,7 @@ public class UserController {
         user.setUserState(0);
         System.out.println("\n最终插入数据："+user);
 
+        //用户记录插入
         int message = userService.insert(user);
         if (message==1){
             verify.put("message","注册成功,邮件已发送，请入邮箱激活。");
@@ -128,12 +125,11 @@ public class UserController {
         }else {
             verify.put("message","注册失败，发生未知错误");
         }
-        //邮件发送
+        //激活邮件发送
         try {
             UserUtil.sendEmail(mailSender,user);
         } catch (Exception e) {
             e.printStackTrace();
-//            mv.setViewName(UserConstant.MESSAGE);
             verify.put("message","注册失败，发生未知错误\n"+e);
             return JSON.toJSONString(verify);
         }
@@ -190,7 +186,7 @@ public class UserController {
             String json = JSON.toJSONString(verify);
             return json;
         }
-        //用户名属性判断
+        //用户名属性判断(判断登录用户输入的邮箱还是手机还是用户名)
         User findUser = userService.findUserByName(loginName);
         if (findUser==null){
             String emailE = UserConstant.EMAIL_GREP;
@@ -222,4 +218,71 @@ public class UserController {
         System.out.println("**********登录完成**********");
         return null;
     }
+
+    /**
+     * 用户注册格式验证（普通注册）
+     * @param verify    验证结果容器
+     * @param br        格式验证
+     * @return
+     */
+    public String fomatVerify(Map verify,BindingResult br){
+        //获取错误信息的总数
+        int errorCount = br.getErrorCount();
+        //格式验证
+        if(errorCount>0) {
+            //获取错误消息字段
+            FieldError nameError = br.getFieldError("userName");
+            FieldError pwdError = br.getFieldError("password");
+            FieldError emailError = br.getFieldError("email");
+            FieldError mobileError = br.getFieldError("mobile");
+            FieldError nicknameError = br.getFieldError("nickname");
+            if (nameError != null) {
+                //将验证的错误消息存进ModelAndView
+                verify.put("nameError", nameError.getDefaultMessage());
+            }
+            if (pwdError != null) {
+                verify.put("pwdError", pwdError.getDefaultMessage());
+            }
+            if (emailError != null) {
+                verify.put("emailError", emailError.getDefaultMessage());
+            }
+            if (mobileError != null) {
+                verify.put("mobileError", mobileError.getDefaultMessage());
+            }
+            if (nicknameError != null) {
+                verify.put("nicknameError", nicknameError.getDefaultMessage());
+            }
+            return JSON.toJSONString(verify);
+        }
+        return null;
+    }
+
+    /**
+     * 用户注册数据验证（普通注册）
+     * @param user      注册信息
+     * @param verify    验证结果容器
+     * @return
+     */
+    public String dataVerify(User user,Map verify){
+        User findUserByName = userService.findUserByName(user.getUserName());
+        User findUserByEmail = userService.findUserByEmail(user.getEmail());
+        User findUserByMobile = userService.findUserByMobile(user.getMobile());
+        //数据验证
+        if(findUserByName!=null){
+            if(user.getUserName().equals(findUserByName.getUserName())){
+                verify.put("nameError", "用户名已被注册");
+            }
+            if(user.getEmail().equals(findUserByEmail.getEmail())){
+                verify.put("emailError", "邮箱已被注册");
+            }
+            if(user.getMobile().equals(findUserByMobile.getMobile())){
+                verify.put("mobileError", "该手机已被注册");
+            }
+//            mv.setViewName(UserConstant.REGISTRY);
+            return JSON.toJSONString(verify);
+        }
+        return null;
+    }
+
+
 }

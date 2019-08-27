@@ -23,7 +23,7 @@
 
   <!--根据主键修改用户激活状态-->
   <update id="updateStateByKey" parameterType="java.lang.Integer">
-    update from user set user_state=1 where user_id=#{userId}
+    update user set user_state=1 where user_id=#{userId}
   </update>
   <!--根据用户名查找用户-->
   <select id="selectUserByName" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
@@ -36,6 +36,10 @@
   <!--根据手机查找用户-->
   <select id="selectUserByMobile" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
     select * from user where mobile=#{mobile}
+  </select>
+  <!--根据注册码查找相同邀请码用户-->
+  <select id="selectByRegistCode" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
+    select * from user where invite_code=#{registCode}
   </select>
 
 

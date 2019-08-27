@@ -33,4 +33,6 @@ public interface UserService {
     User findUserByUserId(Integer userId);
 
     int modifyUserInfo(User user);
+
+    User findUserByRegistCode(String registCode);
 }

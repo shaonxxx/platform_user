@@ -152,6 +152,11 @@ public class UserServiceImpl implements UserService {
         return userDao.updateByPrimaryKeySelective(user);
     }
 
+    @Override
+    public User findUserByRegistCode(String registCode) {
+        return userDao.selectByRegistCode(registCode);
+    }
+
 
     /*
     * 分页，按条件查询user
