@@ -1,5 +1,6 @@
 package com.woniu.woniuticket.platform_user.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.woniu.woniuticket.platform_user.constant.UserConstant;
 import com.woniu.woniuticket.platform_user.pojo.User;
 import com.woniu.woniuticket.platform_user.service.UserService;
@@ -14,8 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.sql.ResultSet;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@CrossOrigin
 @RestController
 public class UserController {
 
@@ -32,8 +38,9 @@ public class UserController {
      * @return
      */
     @PostMapping("/user")
-    public ModelAndView userRegisty(@Validated User user, BindingResult br){
-        ModelAndView mv = new ModelAndView();
+    public String userRegisty(@RequestBody @Validated User user, BindingResult br){ //@Validated
+//        ModelAndView mv = new ModelAndView();
+        Map<String,Object> verify = new HashMap();
         System.out.println("**********进入注册方法**********");
         System.out.println("接收的参数："+user);
         //获取错误信息的总数
@@ -48,22 +55,43 @@ public class UserController {
             FieldError nicknameError = br.getFieldError("nickname");
             if (nameError != null) {
                 //将验证的错误消息存进ModelAndView
-                mv.addObject("nameError", nameError.getDefaultMessage());
+                verify.put("nameError", nameError.getDefaultMessage());
             }
             if (pwdError != null) {
-                mv.addObject("pwdError", pwdError.getDefaultMessage());
+                verify.put("pwdError", pwdError.getDefaultMessage());
             }
             if (emailError != null) {
-                mv.addObject("emailError", emailError.getDefaultMessage());
+                verify.put("emailError", emailError.getDefaultMessage());
             }
             if (mobileError != null) {
-                mv.addObject("mobileError", mobileError.getDefaultMessage());
+                verify.put("mobileError", mobileError.getDefaultMessage());
             }
             if (nicknameError != null) {
-                mv.addObject("nicknameError", nicknameError.getDefaultMessage());
+                verify.put("nicknameError", nicknameError.getDefaultMessage());
             }
-            mv.setViewName(UserConstant.REGISTRY);
-            return mv;
+
+            return JSON.toJSONString(verify);
+//            mv.setViewName(UserConstant.REGISTRY);
+//            return mv;
+        }
+        if(user.getRegistCode()!=null && user.getRegistCode()!=""){
+            System.out.println("有注册码");
+            /*
+                这里处理有注册码的情况，
+                比如优惠券
+
+                根据 ·注册码· 查找拥有该 ·邀请码· 用户，
+                携带注册码用户 + 券
+                携带邀请码用户 + 券
+
+                1.根据注册码查拥有该邀请码用户（验证注册码正确性）
+                2.根据查找到的用户id查钱包 + 券（修改券操作）
+                3.注册用户 + 券（修改券操作）
+                4.注册用户执行insert后才会有钱包，（注册完毕同时insert钱包）
+                5.注册用户执行insert之后才能根据id查找钱包或者通过id修改钱包
+                so，这段代码需要放在插入语句之后
+
+             */
         }
         System.out.println();
         User findUserByName = userService.findUserByName(user.getUserName());
@@ -72,16 +100,16 @@ public class UserController {
         //数据验证
         if(findUserByName!=null){
             if(user.getUserName().equals(findUserByName.getUserName())){
-                mv.addObject("nameError", "用户名已被注册");
+                verify.put("nameError", "用户名已被注册");
             }
             if(user.getEmail().equals(findUserByEmail.getEmail())){
-                mv.addObject("emailError", "邮箱已被注册");
+                verify.put("emailError", "邮箱已被注册");
             }
             if(user.getMobile().equals(findUserByMobile.getMobile())){
-                mv.addObject("mobileError", "该手机已被注册");
+                verify.put("mobileError", "该手机已被注册");
             }
-            mv.setViewName(UserConstant.REGISTRY);
-            return mv;
+//            mv.setViewName(UserConstant.REGISTRY);
+            return JSON.toJSONString(verify);
         }
         //对传入密码进行md5加密
         String md5Password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
@@ -92,23 +120,25 @@ public class UserController {
         user.setVipState(0);
         user.setUserState(0);
         System.out.println("\n最终插入数据："+user);
+
         int message = userService.insert(user);
         if (message==1){
-            mv.addObject("message","注册成功,邮件已发送，请入邮箱激活。");
+            verify.put("message","注册成功,邮件已发送，请入邮箱激活。");
+//            return null;
         }else {
-            mv.addObject("message","注册失败，发生未知错误");
+            verify.put("message","注册失败，发生未知错误");
         }
+        //邮件发送
         try {
             UserUtil.sendEmail(mailSender,user);
         } catch (Exception e) {
             e.printStackTrace();
-            mv.setViewName(UserConstant.MESSAGE);
-            mv.addObject("message","注册失败，发生未知错误\n"+e);
-            return mv;
+//            mv.setViewName(UserConstant.MESSAGE);
+            verify.put("message","注册失败，发生未知错误\n"+e);
+            return JSON.toJSONString(verify);
         }
         System.out.println("**********退出注册方法**********");
-        mv.setViewName(UserConstant.MESSAGE);
-        return mv;
+        return JSON.toJSONString(verify);
     }
 
     /**
@@ -144,48 +174,52 @@ public class UserController {
      * 用户登录(普通登录)
      * @return
      */
-    @GetMapping("/user")
-    public ModelAndView userLogin(String loginName, String password, HttpServletRequest req){
+    @PostMapping("/user/session")
+    public String userLogin(String loginName,String password, Boolean remember,HttpServletRequest req){
         System.out.println("**********进入登录方法**********");
-        ModelAndView mv = new ModelAndView();
-        System.out.println("登录使用账户："+loginName+",登录使用密码："+password);
+        System.out.println("登录使用账户："+loginName+",登录使用密码："+password+",是否选中30天套餐"+remember);
+        Map<String,Object> verify = new HashMap();
         //账号密码格式验证
         if(loginName==null || loginName==""){
-            mv.addObject("message","用户名不能为空");
+            verify.put("loginNameError","用户名不能为空");
         }
         if(password==null || password==""){
-            mv.addObject("message","密码不能为空");
+            verify.put("passwordError","密码不能为空");
+        }
+        if(verify.size()!=0){
+            String json = JSON.toJSONString(verify);
+            return json;
         }
         //用户名属性判断
         User findUser = userService.findUserByName(loginName);
         if (findUser==null){
-            System.out.println("不是用户名");
             String emailE = UserConstant.EMAIL_GREP;
             if(loginName.matches(emailE)){
-                System.out.println("是邮箱");
                 findUser=userService.findUserByEmail(loginName);
             }else {
-                System.out.println("是手机");
                 findUser=userService.findUserByMobile(loginName);
             }
         }
         //账号密码数据匹配（返回键：message，值：错误信息）
         if(findUser==null){
             System.out.println("用户名不正确");
-            mv.addObject("message","用户名或密码不正确");
-            mv.setViewName(UserConstant.LOGIN);
-            return mv;
+            verify.put("message","用户名或密码不正确");
         }else{
             if(!findUser.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))){
                 System.out.println("密码不正确");
-                mv.addObject("message","用户名或密码不正确");
-                mv.setViewName(UserConstant.LOGIN);
-                return mv;
+                verify.put("message","用户名或密码不正确");
             }
         }
-        req.getSession().setAttribute(UserConstant.USER_LOGIN,findUser);
-        mv.setViewName(UserConstant.INDEX);
+        if(verify.size()!=0){
+            String json = JSON.toJSONString(verify);
+            return json;
+        }
+        HttpSession session = req.getSession();
+        session.setAttribute(UserConstant.USER_LOGIN,findUser);
+        if(remember) {
+            session.setMaxInactiveInterval(43200);//设置单位为秒，设置为-1永不过期, 这里设置30天
+        }
         System.out.println("**********登录完成**********");
-        return mv;
+        return null;
     }
 }

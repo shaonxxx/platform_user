@@ -36,6 +36,11 @@ public class PlatformUserApplicationTests {
         System.out.println(user.getUserName());
     }
     @Test
+    public void testUserLogin(){
+        User findUser = userService.findUserByName("qweqwe");
+        System.out.println(findUser);
+    }
+    @Test
     public void contextLoads() {
         User user = new User();
         user.setUserName("qqq");

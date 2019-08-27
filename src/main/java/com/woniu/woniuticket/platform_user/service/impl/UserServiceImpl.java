@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findUserByName(String userName) {
-        return null;
+        return userDao.selectUserByName(userName);
     }
 
     /**

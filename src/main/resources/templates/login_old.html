@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="/static/jquery.min.js"></script>
+    <script src="../static/vue.js"></script>
+    <script>
+        var message = [[${message}]];
+        if(message.length>0){
+            alert(massage);
+        }
+
+    </script>
+</head>
+<body>
+<form id="login" action="/user" method="post">
+    <table>
+        <tr>
+            <td>账户：</td>
+            <td><input name="loginName" type="text" placeholder="用户名/电子邮箱/手机"></td>
+        </tr>
+        <tr>
+            <td>密码</td>
+            <td><input name="password" type="password" placeholder="你的密码"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="登录"></td>
+            <td><a href="/index">取消</a></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
