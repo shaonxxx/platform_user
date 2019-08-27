@@ -19,7 +19,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.woniu.woniuticket.platform_user.mapper" targetProject="src/main/java"/>
 
 
-        <table tableName="user" mapperName="UserDao" domainObjectName="User" enableDeleteByExample="false"
+        <table tableName="wallet_order" mapperName="WalletOrderDao" domainObjectName="WalletOrder" enableDeleteByExample="false"
                enableUpdateByExample="false"
                enableSelectByExample="false"
                enableCountByExample="false"

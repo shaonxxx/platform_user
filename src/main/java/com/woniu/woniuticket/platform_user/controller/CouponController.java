@@ -6,9 +6,11 @@ import com.woniu.woniuticket.platform_user.pojo.Coupon;
 import com.woniu.woniuticket.platform_user.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sun.util.resources.ar.CalendarData_ar;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 public class CouponController {
@@ -23,9 +25,9 @@ public class CouponController {
 
     @GetMapping("/coupon/{userId}")
     @ResponseBody
-    public Coupon findCouponByUserId(@PathVariable("userId")Integer userId){
-        Coupon coupon = couponService.findCouponByUserId(userId);
-        return coupon;
+    public List<Coupon> findCouponByUserId(@PathVariable("userId")Integer userId){
+        List<Coupon> couponList = couponService.findCouponByUserId(userId);
+        return couponList;
     }
 
 
@@ -34,23 +36,22 @@ public class CouponController {
     *
     * */
 
-    @DeleteMapping("/coupon/{userId}")
-    public Map deleteCoupon(@PathVariable("userId")Integer userId){
+    @DeleteMapping("/coupon/{couponId}")
+    public Map deleteCoupon(@PathVariable("couponId")Integer couponId){
         Map result=new HashMap();
         try {
-            Coupon outCoupon = couponService.couponOut(userId);
-            outCoupon.setState(2);
-            int code = couponService.modifyCoupon(outCoupon);
-            if (code == 0) {
-                result.put("code", 0);
-                result.put("msg", "删除成功");
-            } else {
-                result.put("code", 500);
-                result.put("msg", "删除失败");
-            }
+//            List<Coupon> outCouponList = couponService.couponOut(userId);
+//            for (Coupon outCoupon : outCouponList) {
+//                //设置为被删除状态
+//                outCoupon.setState(3);
+            Coupon coupon = couponService.findCouponByCouponId(couponId);
+            coupon.setState(3);
+            int code = couponService.modifyCoupon(coupon);
+            result.put("code", 0);
+            result.put("msg", "删除成功");
         }catch (CouponException e){
             result.put("code",500);
-            result.put("msg",e.getMessage());
+            result.put("msg","删除失败");
         }
         return result;
     }
@@ -65,8 +66,8 @@ public class CouponController {
     public Map timeoutCoupon(@PathVariable("userId") Integer userId){
         Map result=new HashMap();
         try {
-            Coupon outCoupon = couponService.couponOut(userId);
-            if(outCoupon!=null){
+            List<Coupon> outCouponList = couponService.couponOut(userId);
+            if(outCouponList!=null){
                 result.put("msg","优惠券已失效");
                 result.put("code",500);
             }else{
@@ -94,61 +95,47 @@ public class CouponController {
         return  count;
     }
 
+
     /*
     * 消费使用优惠券
     *
     * */
 
     @PutMapping("/reduceCoupon/{userId}")
-    public Map reduceCoupon(Integer userId){
+    public Map reduceCoupon(@PathVariable("userId") Integer couponId){
         Map result=new HashMap();
-        Coupon coupon = couponService.findCouponByUserId(userId);
-        Integer num = coupon.getNum();
-        num=num-1;
-        coupon.setNum(num);
+        Coupon coupon = couponService.findCouponByCouponId(couponId);
+        coupon.setState(1);
         try {
             int code = couponService.modifyCoupon(coupon);
-            if (code == 0) {
-                result.put("code", 0);
-                result.put("msg", "使用成功，优惠券减少");
-            } else {
-                result.put("code", 500);
-                result.put("msg", "使用失败");
-            }
-        }catch (CouponException e){
-            result.put("code",500);
-            result.put("msg",e.getMessage());
-        }
-        return result;
+            result.put("code", 0);
+            result.put("msg", "使用成功，优惠券减少");
+        } catch (CouponException e) {
+            result.put("code", 500);
+            result.put("msg", "使用失败");
+         }
+            return result;
     }
 
 
     /*
-     * 分享好友，优惠券增加
+     * 分享好友，创造优惠券
      *
      * */
 
     @PutMapping("/addCoupon/{userId}")
-    public Map addCoupon(Integer userId){
+    public Map addCoupon(@PathVariable("userId")Integer userId){
         Map result=new HashMap();
-        Coupon coupon = couponService.findCouponByUserId(userId);
-        Integer num = coupon.getNum();
-        num=num+1;
-        coupon.setNum(num);
-        try {
-            int code = couponService.modifyCoupon(coupon);
-            if (code == 0) {
-                result.put("code", 0);
-                result.put("msg", "分享成功，优惠券增加");
-            } else {
-                result.put("code", 500);
-                result.put("msg", "分享失败");
-            }
-        }catch (CouponException e){
+        try{
+            int code = couponService.createCoupon(userId);
+            result.put("code", 0);
+            result.put("msg", "分享成功，优惠券增加");
+        } catch (CouponException e){
+            e.printStackTrace();
+            result.put("msg","分享失败");
             result.put("code",500);
-            result.put("msg",e.getMessage());
         }
-        return result;
+             return result;
     }
 
 
@@ -163,17 +150,12 @@ public class CouponController {
         Map result=new HashMap();
         try {
             int code = couponService.addCoupon(coupon);
-            if(code==0){
-                result.put("code",0);
-                result.put("msg","添加优惠券成功");
-            }else{
-                result.put("code",500);
-                result.put("msg","添加优惠券失败");
-            }
+            result.put("code",0);
+            result.put("msg","添加优惠券成功");
         } catch (CouponException e) {
             e.printStackTrace();
             result.put("code",500);
-            result.put("msg",e.getMessage());
+            result.put("msg","添加优惠券失败");
         }
         return  result;
     }
@@ -189,17 +171,12 @@ public class CouponController {
         Map result=new HashMap();
         try {
             int code = couponService.modifyCoupon(coupon);
-            if(code==0){
-                result.put("code",0);
-                result.put("msg","修改成功");
-            }else{
-                result.put("code",500);
-                result.put("msg","修改失败");
-            }
+            result.put("code",0);
+            result.put("msg","修改成功");
         } catch (CouponException e) {
             e.printStackTrace();
             result.put("code",500);
-            result.put("msg",e.getMessage());
+            result.put("msg","修改失败");
         }
         return  result;
     }

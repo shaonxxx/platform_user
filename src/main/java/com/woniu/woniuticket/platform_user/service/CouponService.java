@@ -3,8 +3,10 @@ package com.woniu.woniuticket.platform_user.service;
 
 import com.woniu.woniuticket.platform_user.pojo.Coupon;
 
+import java.util.List;
+
 public interface CouponService {
-    Coupon findCouponByUserId(Integer userId);
+    List<Coupon> findCouponByUserId(Integer userId);
 
     int countCouponByUserId(Integer userId);
 
@@ -12,5 +14,9 @@ public interface CouponService {
 
     int modifyCoupon(Coupon coupon);
 
-    Coupon couponOut(Integer userId);
+    List<Coupon> couponOut(Integer userId);
+
+    int createCoupon(Integer userId);
+
+    Coupon findCouponByCouponId(Integer couponId);
 }

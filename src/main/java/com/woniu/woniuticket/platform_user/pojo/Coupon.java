@@ -6,13 +6,11 @@ public class Coupon {
     private Integer couponId;
 
     private Integer userId;
-
+    //抵扣金额
     private Float amount;
-
+    //有效时间
     private Date activeTime;
-
-    private Integer num;
-
+    //状态
     private Integer state;
 
     public Integer getCouponId() {
@@ -47,14 +45,6 @@ public class Coupon {
         this.activeTime = activeTime;
     }
 
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-
     public Integer getState() {
         return state;
     }
@@ -70,7 +60,6 @@ public class Coupon {
                 ", userId=" + userId +
                 ", amount=" + amount +
                 ", activeTime=" + activeTime +
-                ", num=" + num +
                 ", state=" + state +
                 '}';
     }

@@ -9,13 +9,15 @@ import com.woniu.woniuticket.platform_user.mapper.UserDao;
 import com.woniu.woniuticket.platform_user.pojo.Coupon;
 import com.woniu.woniuticket.platform_user.pojo.User;
 import com.woniu.woniuticket.platform_user.service.CouponService;
+
 import com.woniu.woniuticket.platform_user.vo.UserVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.DigestUtils;
+
 
 import java.util.List;
 
