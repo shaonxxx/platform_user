@@ -55,6 +55,5 @@ public interface UserService {
 
     String smsCodeVerify(HttpServletRequest req,Map verify,String mobile,String code);
 
-    String sendSmsCode(String mobile, Map verify, HttpServletRequest req);
 
 }

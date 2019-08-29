@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.woniu.woniuticket.platform_user.constant.UserConstant;
 import com.woniu.woniuticket.platform_user.pojo.User;
 import com.woniu.woniuticket.platform_user.service.UserService;
+import com.woniu.woniuticket.platform_user.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -29,7 +30,6 @@ public class UserController {
      * @param br
      * @return
      */
-    @Transactional
     @PostMapping("/user")
     public String userRegisty(@RequestBody @Validated User user, BindingResult br){ //@Validated
         Map<String,Object> verify = new HashMap();      //存放返回消息
@@ -107,7 +107,11 @@ public class UserController {
 
 
     /**
-     * 用户登录(普通登录)
+     * 用户登录（普通登录）
+     * @param loginName
+     * @param password
+     * @param remember
+     * @param req
      * @return
      */
     @PostMapping("/user/session")
@@ -160,6 +164,74 @@ public class UserController {
     }
 
 
+    /**
+     * 根据手机验证码登录
+     * @param mobile    手机号
+     * @param code      验证码
+     * @param req
+     * @param remember  是否记住
+     * @return
+     */
+    @PostMapping("/user/mobile/session")
+    public String mobileLogin(String mobile,String code,HttpServletRequest req, Boolean remember){
+        Map verify = new HashMap();
+        String veri = userService.mobileFormatVerify(mobile,verify);
+        if(veri!=null){
+            return veri;
+        }
+        //手机数据验证
+        User findUser = userService.findUserByMobile(mobile);
+        if (findUser==null){
+            verify.put("mobileError","未注册的手机");
+            return JSON.toJSONString(verify);
+        }
+        //验证码验证
+        veri = userService.smsCodeVerify(req,verify,mobile,code);
+        if(veri!=null){
+            return veri;
+        }
+        //将登录对象存入session（Json格式）
+        req.getSession().setAttribute(UserConstant.USER_LOGIN,JSON.toJSONString(findUser));
+        if(remember) {
+            req.getSession().setMaxInactiveInterval(43200);//设置单位为秒，设置为-1永不过期, 这里设置30天
+        }
+        return null;
+    }
+
+    /**
+     * 发送短信验证码
+     * @param mobile
+     * @param verify
+     * @param req
+     * @return
+     */
+    @GetMapping("/user/smsCode")
+    public String sendSmsCode(String mobile, Map verify, HttpServletRequest req) {
+        try {
+            //手机格式验证
+            String veri = userService.mobileFormatVerify(mobile,verify);
+            if(veri!=null){
+                return veri;
+            }
+            //生成随机6位验证码
+            String code = UserUtil.getRandomCode();
+            //发送短信
+            if(!UserUtil.sendSmsCode(mobile, code)) {
+                verify.put("message","验证码发送失败");
+                return JSON.toJSONString(verify);
+            } else {
+                //将验证码、手机号码和当前的系统时间存储到session中
+                req.getSession().setAttribute("code", code);
+                req.getSession().setAttribute("number", mobile );
+                req.getSession().setAttribute("time", System.currentTimeMillis());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            verify.put("message","验证码发送异常:"+e.getMessage());
+            return JSON.toJSONString(verify);
+        }
+        return null;
+    }
 
 
 

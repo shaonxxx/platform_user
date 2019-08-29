@@ -17,7 +17,6 @@ import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -415,37 +414,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    /**
-     * 短信发送
-     * @return
-     */
-    @Override
-    public String sendSmsCode(String mobile, Map verify, HttpServletRequest req) {
-        try {
-            //手机格式验证
-            String veri = mobileFormatVerify(mobile,verify);
-            if(veri!=null){
-                return veri;
-            }
-            //生成随机6位验证码
-            String code = UserUtil.getRandomCode();
-            //发送短信
-            if(!UserUtil.sendSmsCode(mobile, code)) {
-                verify.put("message","验证码发送失败");
-                return JSON.toJSONString(verify);
-            } else {
-                //将验证码、手机号码和当前的系统时间存储到session中
-                req.getSession().setAttribute("code", code);
-                req.getSession().setAttribute("number", mobile );
-                req.getSession().setAttribute("time", System.currentTimeMillis());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            verify.put("message","验证码发送异常:"+e.getMessage());
-            return JSON.toJSONString(verify);
-        }
-        return null;
-    }
+
 
 
 
