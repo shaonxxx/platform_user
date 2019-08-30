@@ -1,9 +1,10 @@
 package com.woniu.woniuticket.platform_user.pojo;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable {
     private Integer userId;
 
     @NotNull(message = "姓名不能为空")
@@ -36,7 +37,7 @@ public class User {
 
     private String inviteCode;
 
-    private String registCode;
+    private String registCode;  //注册码
 
     private Integer userState;
 

@@ -7,13 +7,6 @@ package com.woniu.woniuticket.platform_user.constant;
 public class UserConstant {
 
 
-    public final static String REGISTRY = "/registry";  //注册页面
-
-    public final static String LOGIN = "/login";        //登录页面
-
-    public final static String INDEX = "/index";        //主页
-
-    public final static String MESSAGE = "/message";    //登录注册操作后跳转页面，（暂定，测试用）
 
     public final static String USER_LOGIN = "userLogin";//登录成功存在session中的user对象名
 

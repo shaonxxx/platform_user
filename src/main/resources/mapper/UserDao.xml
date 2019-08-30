@@ -38,6 +38,10 @@
   <select id="selectUserByMobile" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
     select * from user where mobile=#{mobile}
   </select>
+  <!--根据注册码查找相同邀请码用户-->
+  <select id="selectByRegistCode" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
+    select * from user where invite_code=#{registCode}
+  </select>
 
 
 

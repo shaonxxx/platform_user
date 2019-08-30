@@ -34,4 +34,6 @@ public interface UserDao {
     User selectUserByEmail(String email);
 
     User selectUserByMobile(String mobile);
+
+    User selectByRegistCode(String registCode);
 }
