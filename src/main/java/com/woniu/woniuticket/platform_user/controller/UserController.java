@@ -169,12 +169,18 @@ public class UserController {
      * @param mobile    手机号
      * @param code      验证码
      * @param req
-     * @param remember  是否记住
      * @return
      */
     @PostMapping("/user/mobile/session")
-    public String mobileLogin(String mobile,String code,HttpServletRequest req, Boolean remember){
+    public String mobileLogin(String mobile,String code,HttpServletRequest req) throws InterruptedException {
+        req.getSession().setAttribute("code", "123456");
+        req.getSession().setAttribute("number", "18048000491" );
+        req.getSession().setAttribute("time", System.currentTimeMillis());
+        Thread.sleep(61000);
+
+
         Map verify = new HashMap();
+        //手机格式验证
         String veri = userService.mobileFormatVerify(mobile,verify);
         if(veri!=null){
             return veri;
@@ -192,11 +198,9 @@ public class UserController {
         }
         //将登录对象存入session（Json格式）
         req.getSession().setAttribute(UserConstant.USER_LOGIN,JSON.toJSONString(findUser));
-        if(remember) {
-            req.getSession().setMaxInactiveInterval(43200);//设置单位为秒，设置为-1永不过期, 这里设置30天
-        }
         return null;
     }
+
 
     /**
      * 发送短信验证码
@@ -205,9 +209,10 @@ public class UserController {
      * @param req
      * @return
      */
-    @GetMapping("/user/smsCode")
-    public String sendSmsCode(String mobile, Map verify, HttpServletRequest req) {
+    @GetMapping("/user/smsCode/{mobile}")
+    public String sendSmsCode(@PathVariable("mobile") String mobile, Map verify, HttpServletRequest req) {
         try {
+//            System.out.println("进入手机号短信发送："+mobile+verify);
             //手机格式验证
             String veri = userService.mobileFormatVerify(mobile,verify);
             if(veri!=null){
@@ -216,15 +221,15 @@ public class UserController {
             //生成随机6位验证码
             String code = UserUtil.getRandomCode();
             //发送短信
-            if(!UserUtil.sendSmsCode(mobile, code)) {
-                verify.put("message","验证码发送失败");
-                return JSON.toJSONString(verify);
-            } else {
-                //将验证码、手机号码和当前的系统时间存储到session中
-                req.getSession().setAttribute("code", code);
-                req.getSession().setAttribute("number", mobile );
-                req.getSession().setAttribute("time", System.currentTimeMillis());
-            }
+//            if(!UserUtil.sendSmsCode(mobile, code)) {
+//                verify.put("message","验证码发送失败");
+//                return JSON.toJSONString(verify);
+//            } else {
+//                //将验证码、手机号码和当前的系统时间存储到session中
+//                req.getSession().setAttribute("code", code);
+//                req.getSession().setAttribute("number", mobile );
+//                req.getSession().setAttribute("time", System.currentTimeMillis());
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             verify.put("message","验证码发送异常:"+e.getMessage());

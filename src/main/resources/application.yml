@@ -1,4 +1,12 @@
 spring:
+  redis:
+    port: 6666
+    host: 148.70.167.3
+    database: 1
+    timeout: 5000
+    password: 123
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:mysql://cdb-e4a6q0m8.cd.tencentcdb.com:10006/cinema?serverTimezone=GMT%2B8
     username: root

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
@@ -15,6 +16,7 @@ import javax.sql.DataSource;
 @SpringBootApplication
 @MapperScan(value = "com.woniu.woniuticket.platform_user.mapper")
 @EnableCaching
+@EnableSpringHttpSession
 public class PlatformUserApplication  implements TransactionManagementConfigurer {
 
     @Resource(name = "txManager")
