@@ -7,6 +7,9 @@ import com.woniu.woniuticket.platform_user.pojo.WalletOrder;
 import com.woniu.woniuticket.platform_user.service.UserService;
 import com.woniu.woniuticket.platform_user.service.WalletOrderService;
 import com.woniu.woniuticket.platform_user.service.WalletService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +23,10 @@ public class WalletController {
     WalletOrderService walletOrderService;
     /*
     * 查找用户钱包
-    *
+    * @param userId
+    * @return 返回钱包对象
     * */
-
+    @ApiOperation(value = "获取钱包信息",notes = "根据url中的用户id查询用户钱包")
     @GetMapping("/wallet/@{userId}")
     @ResponseBody
     public Wallet findWalletByUserName(@PathVariable("userId") Integer userId){
@@ -31,21 +35,23 @@ public class WalletController {
     }
 
     /*
-    *钱包创建
-    *
+    * 钱包创建
+    * @param userId
+    * @return 返回结果集合
     * */
-
+    @ApiOperation(value = "创建用户钱包",notes = "根据url的用户id查找用户是否拥有钱包，没有创造一个")
     @PostMapping("/wallet/{userId}")
-    public Map createWallet(@PathVariable("userId")Integer userId){
+    public Map createWallet(@PathVariable("userId")@RequestBody Integer userId){
         Map result=new HashMap();
         try {
             int code = walletService.createWallet(userId);
             if(code==0){
                 result.put("msg","已存在钱包");
                 result.put("code",500);
+            }else{
+                result.put("msg","钱包创建成功");
+                result.put("code",0);
             }
-            result.put("msg","钱包创建成功");
-            result.put("code",0);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("msg","钱包创建失败");
@@ -57,11 +63,12 @@ public class WalletController {
 
     /*
     * 钱包余额充值
-    *
+    * @param userId
+    * @return 返回结果集合
     * */
-
+    @ApiOperation(value = "对用户钱包的余额进行充值",notes = "根据url的用户id找到钱包，对余额进行增加")
     @PutMapping("/walletAdd/{userId}")
-    public Map AddMoney(@PathVariable("userId")Integer userId){
+    public Map AddMoney(@PathVariable("userId") Integer userId){
         Map result=new HashMap();
         try {
             Wallet wallet = walletService.findWalletByUserId(userId);
@@ -82,9 +89,10 @@ public class WalletController {
 
     /*
     * 钱包余额使用
-    *
+    * @param userId
+    * @return 返回结果集合
     * */
-
+    @ApiOperation(value = "找到用户钱包，对余额进行减少",notes ="根据url的用户id找到钱包，对余额进行减少" )
     @PutMapping("/walletReduce/{userId}")
     public Map ReduceMoney(@PathVariable("userId")Integer userId){
         Map result=new HashMap();
@@ -113,10 +121,11 @@ public class WalletController {
 
 
     /*
-    *钱包订单集合查找
-    *
+    * 钱包订单集合查找
+    * @param userId
+    * @return 返回钱包订单list集合
     * */
-
+    @ApiOperation(value ="获取用户钱包订单列表",notes = "根据url中的用户id查找到钱包订单集合展示")
     @GetMapping("/walletOrderList/{userId}")
     @ResponseBody
     public List<WalletOrder> findWalletOrderListByUserId(@PathVariable("userId") Integer userId){
@@ -126,9 +135,10 @@ public class WalletController {
 
     /*
     * 钱包订单信息
-    *
+    * @param walletOrderId
+    * @return 返回订单对象
     * */
-
+    @ApiOperation(value ="获取用户钱包订单",notes = "根据url中的钱包订单id查找到钱包订单信息")
     @GetMapping("/walletOrder/{walletOrderId}")
     @ResponseBody
     public WalletOrder findWalletOrderByOrderId(@PathVariable("walletOrderId")Integer walletOrderId){
@@ -138,9 +148,10 @@ public class WalletController {
 
     /*
     * 钱包订单删除
-    *
+    * @param walletOrderId
+    * @return 返回结果集合
     * */
-
+    @ApiOperation(value ="对用户钱包订单状态修改，完成假删",notes = "根据url中的钱包订单id查找到钱包订单并修改状态")
     @DeleteMapping("/walletOrder/{walletOrderId}")
     public Map deleteOrderByUserId(@PathVariable("walletOrderId")Integer walletOrderId){
         Map result=new HashMap();
@@ -165,15 +176,18 @@ public class WalletController {
 
     /*
     * 电影票支付钱包订单生成
-    *
+    * @param walletOder
+    * @param userId
+    * @return 返回结果集合
     * */
-
-    @PostMapping("/walletOrder")
-    public Map createWalletOrder(WalletOrder walletOrder,Integer userId){
+    @ApiOperation(value = "生成钱包电影票支付订单",notes = "")
+    @PostMapping("/walletTicketOrder/{userId}")
+    public Map createWalletOrder(@PathVariable("userId") @RequestBody Integer userId){
         //订单支付类型 walletOrderType
         //1购票观影支付 余额-
         //2会员充值支付 余额-
         //3余额充入 余额+
+        WalletOrder walletOrder=new WalletOrder();
         walletOrder.setWalletOrderCreatetime(new Date());
         walletOrder.setUserId(userId);
         walletOrder.setWalletOrderType(1);
@@ -194,11 +208,14 @@ public class WalletController {
 
     /*
      * 会员支付钱包订单生成
-     *
+     * @param walletOrder
+     * @param userId
+     * @return 返回结果集合
      * */
-
-    @PostMapping("/walletOrderVip")
-    public Map createVipWalletOrder(WalletOrder walletOrder,Integer userId){
+    @ApiOperation(value = "生成钱包vip充值支付订单",notes = "")
+    @PostMapping("/walletVipOrder/{userId}")
+    public Map createVipWalletOrder(@PathVariable("userId") @RequestBody Integer userId){
+        WalletOrder walletOrder=new WalletOrder();
         walletOrder.setWalletOrderCreatetime(new Date());
         walletOrder.setUserId(userId);
         walletOrder.setWalletOrderType(2);
@@ -216,5 +233,32 @@ public class WalletController {
         return  result;
     }
 
+
+    /*
+     * 电影票支付钱包订单生成
+     * @param walletOder
+     * @param userId
+     * @return 返回结果集合
+     * */
+    @ApiOperation(value = "生成钱包余额充值订单",notes = "")
+    @PostMapping("/walletChargeOrder/{userId}")
+    public Map createWalletChargeOrder(@PathVariable("userId") @RequestBody Integer userId){
+        WalletOrder walletOrder=new WalletOrder();
+        walletOrder.setWalletOrderCreatetime(new Date());
+        walletOrder.setUserId(userId);
+        walletOrder.setWalletOrderType(3);
+        walletOrder.setWalletOrderState(1);
+        Map result=new HashMap();
+        try {
+            int code = walletOrderService.createWalletOrder(walletOrder);
+            result.put("code",0);
+            result.put("msg","订单生成成功");
+        } catch (WalletException e) {
+            e.printStackTrace();
+            result.put("code",500);
+            result.put("msg","订单生成失败");
+        }
+        return  result;
+    }
 
 }

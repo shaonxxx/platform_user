@@ -3,7 +3,7 @@
 <mapper namespace="com.woniu.woniuticket.platform_user.mapper.UserDao">
   <resultMap id="BaseResultMap" type="com.woniu.woniuticket.platform_user.pojo.User">
     <id column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="username" jdbcType="VARCHAR" property="userName" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
@@ -15,19 +15,20 @@
     <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
     <result column="regist_code" jdbcType="VARCHAR" property="registCode" />
     <result column="user_state" jdbcType="TINYINT" property="userState" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_id, username, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
-    headimg, invite_code, regist_code, user_state
+    user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
+    headimg, invite_code, regist_code, user_state, gender
   </sql>
 
   <!--根据主键修改用户激活状态-->
   <update id="updateStateByKey" parameterType="java.lang.Integer">
-    update user set user_state=1 where user_id=#{userId}
+    update from user set user_state=1 where user_id=#{userId}
   </update>
   <!--根据用户名查找用户-->
   <select id="selectUserByName" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
-    select * from user where username=#{userName}
+    select * from user where user_name=#{userName}
   </select>
   <!--根据邮箱查找用户-->
   <select id="selectUserByEmail" parameterType="String" resultType="com.woniu.woniuticket.platform_user.pojo.User">
@@ -50,7 +51,7 @@
     select * from user
     <where>
       <if test="userName != null">
-        username = #{userName,jdbcType=VARCHAR},
+        user_name = #{userName,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
@@ -85,6 +86,9 @@
       <if test="userState != null">
         user_state = #{userState,jdbcType=INTEGER},
       </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
     </where>
   </select>
 
@@ -94,7 +98,7 @@
     <where>
       <if test="userVo !=null">
         <if test="userVo.userName != null and '' != userVo.userName">
-          username like '%' #{userVo.userName} '%'
+          user_name like '%' #{userVo.userName} '%'
         </if>
         <if test="userVo.registTime != null">
           order by regist_time = #{userVo.registTime} desc
@@ -104,7 +108,7 @@
   </select>
 
   <select id="selectUserByUserName" resultMap="BaseResultMap">
-    select * from user where username = #{userName}
+    select * from user where user_name = #{userName}
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -118,16 +122,16 @@
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.User" useGeneratedKeys="true" keyProperty="userId">
-    insert into user (user_id, username, password, 
+    insert into user (user_id, user_name, password, 
       email, mobile, nickname, 
       regist_time, vip_state, vip_activetime, 
       headimg, invite_code, regist_code, 
-      user_state)
+      user_state, gender)
     values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
       #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=INTEGER}, #{vipActivetime,jdbcType=DATE},
       #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, 
-      #{userState,jdbcType=TINYINT})
+      #{userState,jdbcType=TINYINT}, #{gender,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
     insert into user
@@ -136,7 +140,7 @@
         user_id,
       </if>
       <if test="userName != null">
-        username,
+        user_name,
       </if>
       <if test="password != null">
         password,
@@ -170,6 +174,9 @@
       </if>
       <if test="userState != null">
         user_state,
+      </if>
+      <if test="gender != null">
+        gender,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -212,13 +219,16 @@
       <if test="userState != null">
         #{userState,jdbcType=TINYINT},
       </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
     update user
     <set>
       <if test="userName != null">
-        username = #{userName,jdbcType=VARCHAR},
+        user_name = #{userName,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
@@ -253,12 +263,15 @@
       <if test="userState != null">
         user_state = #{userState,jdbcType=TINYINT},
       </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
     update user
-    set username = #{userName,jdbcType=VARCHAR},
+    set user_name = #{userName,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=VARCHAR},
@@ -269,7 +282,8 @@
       headimg = #{headimg,jdbcType=VARCHAR},
       invite_code = #{inviteCode,jdbcType=VARCHAR},
       regist_code = #{registCode,jdbcType=VARCHAR},
-      user_state = #{userState,jdbcType=TINYINT}
+      user_state = #{userState,jdbcType=TINYINT},
+      gender = #{gender,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 </mapper>

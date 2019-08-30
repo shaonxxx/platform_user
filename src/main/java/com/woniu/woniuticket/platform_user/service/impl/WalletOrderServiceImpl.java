@@ -14,6 +14,11 @@ public class WalletOrderServiceImpl implements WalletOrderService {
     @Autowired
     WalletOrderDao walletOrderDao;
 
+    /*
+    * 根据用户id分页查询钱包订单
+    * @param userId
+    * @return
+    * */
     @Override
     public List<WalletOrder> findOrderByUserId(Integer userId) {
         return walletOrderDao.selectOrderList(userId);

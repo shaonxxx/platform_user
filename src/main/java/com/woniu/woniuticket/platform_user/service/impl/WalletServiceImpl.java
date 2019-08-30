@@ -29,13 +29,16 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public int createWallet(Integer userId) {
         Wallet wallet = walletDao.selectWalletByUserId(userId);
-        if (wallet == null) {
+        System.out.println(wallet);
+        //数据库查找用户钱包 如果为空 创建一个钱包
+        if (wallet != null) {
+            //数据库存在钱包
+            return 0;
+        }else{
             Wallet newWallet = new Wallet();
             newWallet.setUserId(userId);
             newWallet.setResAmount((long) 0);
             return walletDao.insert(newWallet);
-        }else{
-            return 0;
         }
     }
 }

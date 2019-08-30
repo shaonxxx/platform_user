@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
@@ -16,6 +17,7 @@ import javax.sql.DataSource;
 @SpringBootApplication
 @MapperScan(value = "com.woniu.woniuticket.platform_user.mapper")
 @EnableCaching
+@EnableEurekaClient
 @EnableSpringHttpSession
 public class PlatformUserApplication  implements TransactionManagementConfigurer {
 

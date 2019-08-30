@@ -9,7 +9,7 @@
     <result column="state" jdbcType="INTEGER" property="state" />
   </resultMap>
   <sql id="Base_Column_List">
-    coupon_id, user_id, amount, active_time, num, state
+    coupon_id, user_id, amount, active_time, state
   </sql>
   <select id="selectCouponOut" resultMap="BaseResultMap">
     select * from coupon where <![CDATA[ active_time < now()  ]]> and state = 0;
@@ -20,7 +20,7 @@
   </select>
 
   <select id="selectCouponByUserId" resultMap="BaseResultMap">
-    select * from coupon where user_id = #{userId} and state !=2
+    select * from coupon where user_id = #{userId} and state !=3
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

@@ -10,8 +10,8 @@
     <result column="wallet_order_type" jdbcType="INTEGER" property="walletOrderType" />
   </resultMap>
   <sql id="Base_Column_List">
-    wallet_order_id, wallet_order_createtime, wallet_order_money, wallet_order_state, 
-    user_id
+    wallet_order_id, wallet_order_createtime, wallet_order_money, wallet_order_state,
+    wallet_order_type, user_id
   </sql>
 
   <select id="selectVipOrderByTime" resultMap="BaseResultMap">
@@ -49,10 +49,11 @@
   </delete>
   <insert id="insert" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
     insert into wallet_order (wallet_order_id, wallet_order_createtime, 
-      wallet_order_money, wallet_order_state, user_id
+      wallet_order_money, wallet_order_state, wallet_order_type, user_id
       )
     values (#{walletOrderId,jdbcType=INTEGER}, #{walletOrderCreatetime,jdbcType=DATE},
-      #{walletOrderMoney,jdbcType=DECIMAL}, #{walletOrderState,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}
+      #{walletOrderMoney,jdbcType=DECIMAL}, #{walletOrderState,jdbcType=INTEGER}, #{walletOrderType,jdbcType=INTEGER},
+      #{userId,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
@@ -115,6 +116,7 @@
     set wallet_order_createtime = #{walletOrderCreatetime,jdbcType=DATE},
       wallet_order_money = #{walletOrderMoney,jdbcType=DECIMAL},
       wallet_order_state = #{walletOrderState,jdbcType=INTEGER},
+      wallet_order_type = #{walletOrderType,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER}
     where wallet_order_id = #{walletOrderId,jdbcType=INTEGER}
   </update>
