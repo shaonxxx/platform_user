@@ -40,6 +40,16 @@ public class User {
 
     private Integer userState;
 
+    private String gender;
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -146,20 +156,21 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{\n" +
-                "\nuserId=" + userId +
-                ", \nuserName='" + userName + '\'' +
-                ", \npassword='" + password + '\'' +
-                ", \nemail='" + email + '\'' +
-                ", \nmobile='" + mobile + '\'' +
-                ", \nnickname='" + nickname + '\'' +
-                ", \nregistTime=" + registTime +
-                ", \nvipState=" + vipState +
-                ", \nvipActivetime=" + vipActivetime +
-                ", \nheadimg='" + headimg + '\'' +
-                ", \ninviteCode='" + inviteCode + '\'' +
-                ", \nregistCode='" + registCode + '\'' +
-                ", \nuserState=" + userState +
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", registTime=" + registTime +
+                ", vipState=" + vipState +
+                ", vipActivetime=" + vipActivetime +
+                ", headimg='" + headimg + '\'' +
+                ", inviteCode='" + inviteCode + '\'' +
+                ", registCode='" + registCode + '\'' +
+                ", userState=" + userState +
+                ", gender='" + gender + '\'' +
                 '}';
     }
 }

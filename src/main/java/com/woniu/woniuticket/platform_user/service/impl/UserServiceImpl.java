@@ -127,15 +127,26 @@ public class UserServiceImpl implements UserService {
         return userDao.updateStateByKey(userId);
     }
 
+    /*
+    * 根据用户id查找用户
+    * @param userId
+    * @return
+    * */
     @Override
     public User findUserByUserId(Integer userId) {
         return userDao.selectByPrimaryKey(userId);
     }
 
+    /*
+    * 修改用户信息
+    * @param user
+    * @return
+    * */
     @Override
     public int modifyUserInfo(User user) {
         User dbuser = userDao.selectByPrimaryKey(user.getUserId());
         if(dbuser!=null){
+            //数据库用户与当前用户是否为同一人
             if(!dbuser.getUserId().equals(user.getUserId())){
                 if(dbuser.getUserName().equals(user.getUserName())) {
                     //用户名已存在
@@ -154,8 +165,11 @@ public class UserServiceImpl implements UserService {
 
 
     /*
-    * 分页，按条件查询user
-    *
+    * 用户分页，按条件查询user
+    * @param pageSize
+    * @param currentPage
+    * @param userVo
+    * @return
     * */
     @Override
     public List<User> findUserByPage(Integer pageSize, Integer currentPage, UserVo userVo) {

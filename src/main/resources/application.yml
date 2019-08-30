@@ -19,6 +19,8 @@ spring:
         smtp:
           ssl:
             enable: true
+  application:
+    name: user
   servlet:
     multipart:
       enabled: true
@@ -39,4 +41,9 @@ pagehelper:
   helper-dialect: mysql
   support-methods-arguments: true
   params: pageNum=currentPage,pageSize=pageSize
-
+eureka:
+  client:
+    service-url:
+      defaultZone: http://106.52.231.180:8761/eureka
+server:
+  port: 8082
