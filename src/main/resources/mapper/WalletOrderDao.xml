@@ -3,7 +3,7 @@
 <mapper namespace="com.woniu.woniuticket.platform_user.mapper.WalletOrderDao">
   <resultMap id="BaseResultMap" type="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
     <id column="wallet_order_id" jdbcType="INTEGER" property="walletOrderId" />
-    <result column="wallet_order_createtime" jdbcType="DATE" property="walletOrderCreatetime" />
+    <result column="wallet_order_createtime" jdbcType="TIMESTAMP" property="walletOrderCreatetime" />
     <result column="wallet_order_money" jdbcType="DECIMAL" property="walletOrderMoney" />
     <result column="wallet_order_state" jdbcType="INTEGER" property="walletOrderState" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
@@ -51,7 +51,7 @@
     insert into wallet_order (wallet_order_id, wallet_order_createtime, 
       wallet_order_money, wallet_order_state, wallet_order_type, user_id
       )
-    values (#{walletOrderId,jdbcType=INTEGER}, #{walletOrderCreatetime,jdbcType=DATE},
+    values (#{walletOrderId,jdbcType=INTEGER}, #{walletOrderCreatetime,jdbcType=TIMESTAMP},
       #{walletOrderMoney,jdbcType=DECIMAL}, #{walletOrderState,jdbcType=INTEGER}, #{walletOrderType,jdbcType=INTEGER},
       #{userId,jdbcType=INTEGER}
       )
@@ -97,7 +97,7 @@
     update wallet_order
     <set>
       <if test="walletOrderCreatetime != null">
-        wallet_order_createtime = #{walletOrderCreatetime,jdbcType=DATE},
+        wallet_order_createtime = #{walletOrderCreatetime,jdbcType=TIMESTAMP},
       </if>
       <if test="walletOrderMoney != null">
         wallet_order_money = #{walletOrderMoney,jdbcType=DECIMAL},
@@ -113,7 +113,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.woniu.woniuticket.platform_user.pojo.WalletOrder">
     update wallet_order
-    set wallet_order_createtime = #{walletOrderCreatetime,jdbcType=DATE},
+    set wallet_order_createtime = #{walletOrderCreatetime,jdbcType=TIMESTAMP},
       wallet_order_money = #{walletOrderMoney,jdbcType=DECIMAL},
       wallet_order_state = #{walletOrderState,jdbcType=INTEGER},
       wallet_order_type = #{walletOrderType,jdbcType=INTEGER},

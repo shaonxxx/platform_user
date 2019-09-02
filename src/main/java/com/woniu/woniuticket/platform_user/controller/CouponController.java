@@ -1,9 +1,11 @@
 package com.woniu.woniuticket.platform_user.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.woniu.woniuticket.platform_user.exception.CouponException;
 import com.woniu.woniuticket.platform_user.pojo.Coupon;
 import com.woniu.woniuticket.platform_user.service.CouponService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@CrossOrigin
+@Api("用户优惠券管理")
 public class CouponController {
     @Autowired
     CouponService couponService;
@@ -37,9 +41,12 @@ public class CouponController {
     @ApiOperation(value = "用户未删除的优惠券列表",notes = "")
     @GetMapping("/couponList/{userId}")
     @ResponseBody
-    public List<Coupon> findCouponByUserId(@PathVariable("userId")Integer userId){
-        List<Coupon> couponList = couponService.findCouponByUserId(userId);
-        return couponList;
+    public PageInfo<Coupon> findCouponByUserId(@PathVariable("userId")Integer userId,
+                                           @RequestParam(value = "pageSize",defaultValue = "10",required = false)Integer pageSize,
+                                           @RequestParam(value = "currentPage",defaultValue = "1",required = false)Integer currentPage){
+        List<Coupon> couponList = couponService.findCouponByUserId(pageSize,currentPage,userId);
+        PageInfo<Coupon> pageInfo=new PageInfo<>(couponList);
+        return pageInfo;
     }
 
 
@@ -117,8 +124,8 @@ public class CouponController {
     * @return 返回结果集合
     * */
     @ApiOperation(value = "消费优惠券，修改优惠券状态",notes = "根据url的couponId找到可使用优惠券，进行修改")
-    @PutMapping("/reduceCoupon/{userId}")
-    public Map reduceCoupon(@PathVariable("userId") Integer couponId){
+    @PutMapping("/reduceCoupon/{couponId}")
+    public Map reduceCoupon(@PathVariable("couponId") Integer couponId){
         Map result=new HashMap();
         Coupon coupon = couponService.findCouponByCouponId(couponId);
         coupon.setState(1);

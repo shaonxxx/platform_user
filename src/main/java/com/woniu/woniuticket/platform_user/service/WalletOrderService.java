@@ -6,7 +6,7 @@ import com.woniu.woniuticket.platform_user.pojo.WalletOrder;
 import java.util.List;
 
 public interface WalletOrderService {
-    List<WalletOrder> findOrderByUserId(Integer userId);
+    List<WalletOrder> findOrderByUserId(Integer pageSize,Integer currentPage,Integer userId);
 
     int updateWalletOrder(WalletOrder walletOrder);
 

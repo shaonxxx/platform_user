@@ -1,6 +1,7 @@
 package com.woniu.woniuticket.platform_user.mapper;
 
 import com.woniu.woniuticket.platform_user.pojo.WalletOrder;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface WalletOrderDao {
 
     List<WalletOrder> selectReduceOrderByTime(Integer userId);
 
-    List<WalletOrder> selectOrderList(Integer userId);
+    List<WalletOrder> selectOrderList(@Param("pageSize") Integer pageSize, @Param("currentPage") Integer currentPage,@Param("userId") Integer userId);
 
     List<WalletOrder> selectVipOrderByTime(Integer userId);
 }

@@ -52,6 +52,6 @@ pagehelper:
 eureka:
   client:
     service-url:
-      defaultZone: http://106.52.231.180:8761/eureka
+      defaultZone: http://192.168.10.175:8761/eureka
 server:
   port: 8082

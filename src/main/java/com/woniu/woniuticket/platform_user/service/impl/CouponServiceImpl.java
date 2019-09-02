@@ -20,8 +20,8 @@ public class CouponServiceImpl implements CouponService {
     * @return
     * */
     @Override
-    public List<Coupon> findCouponByUserId(Integer userId) {
-        List<Coupon> coupon = couponDao.selectCouponByUserId(userId);
+    public List<Coupon> findCouponByUserId(Integer pageSize,Integer currentPage,Integer userId) {
+        List<Coupon> coupon = couponDao.selectCouponByUserId(pageSize,currentPage,userId);
         return  coupon;
     }
 

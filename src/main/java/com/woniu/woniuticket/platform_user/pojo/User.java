@@ -43,6 +43,16 @@ public class User implements Serializable {
 
     private String gender;
 
+    private Date birth;
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -172,6 +182,8 @@ public class User implements Serializable {
                 ", registCode='" + registCode + '\'' +
                 ", userState=" + userState +
                 ", gender='" + gender + '\'' +
+                ", birth=" + birth +
                 '}';
+
     }
 }

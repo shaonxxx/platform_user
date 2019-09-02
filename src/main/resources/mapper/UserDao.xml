@@ -16,10 +16,11 @@
     <result column="regist_code" jdbcType="VARCHAR" property="registCode" />
     <result column="user_state" jdbcType="TINYINT" property="userState" />
     <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="birth" jdbcType="DATE" property="birth" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime, 
-    headimg, invite_code, regist_code, user_state, gender
+    user_id, user_name, password, email, mobile, nickname, regist_time, vip_state, vip_activetime,
+    headimg, invite_code, regist_code, user_state, gender, birth
   </sql>
 
   <!--根据主键修改用户激活状态-->
@@ -89,6 +90,9 @@
       <if test="gender != null">
         gender = #{gender,jdbcType=VARCHAR},
       </if>
+      <if test="birth != null">
+        birth = #{birth,jdbcType=DATE},
+      </if>
     </where>
   </select>
 
@@ -112,8 +116,8 @@
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+    select
+    *
     from user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
@@ -131,7 +135,7 @@
       #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
       #{registTime,jdbcType=TIMESTAMP}, #{vipState,jdbcType=INTEGER}, #{vipActivetime,jdbcType=DATE},
       #{headimg,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, 
-      #{userState,jdbcType=TINYINT}, #{gender,jdbcType=VARCHAR})
+      #{userState,jdbcType=TINYINT}, #{gender,jdbcType=VARCHAR}, #{birth,jdbcType=DATE})
   </insert>
   <insert id="insertSelective" parameterType="com.woniu.woniuticket.platform_user.pojo.User">
     insert into user
@@ -178,6 +182,9 @@
       <if test="gender != null">
         gender,
       </if>
+      <if test="birth != null">
+        birth,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -221,6 +228,9 @@
       </if>
       <if test="gender != null">
         #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birth != null">
+        #{birth,jdbcType=DATE},
       </if>
     </trim>
   </insert>
@@ -266,6 +276,9 @@
       <if test="gender != null">
         gender = #{gender,jdbcType=VARCHAR},
       </if>
+      <if test="gender != null">
+        birth = #{birth,jdbcType=DATE},
+      </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
@@ -283,7 +296,8 @@
       invite_code = #{inviteCode,jdbcType=VARCHAR},
       regist_code = #{registCode,jdbcType=VARCHAR},
       user_state = #{userState,jdbcType=TINYINT},
-      gender = #{gender,jdbcType=VARCHAR}
+      gender = #{gender,jdbcType=VARCHAR},
+      birth = #{birth,jdbcType=DATE}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 </mapper>

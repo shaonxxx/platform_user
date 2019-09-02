@@ -6,7 +6,7 @@ import com.woniu.woniuticket.platform_user.pojo.Coupon;
 import java.util.List;
 
 public interface CouponService {
-    List<Coupon> findCouponByUserId(Integer userId);
+    List<Coupon> findCouponByUserId(Integer pageSize,Integer currentPage,Integer userId);
 
     int countCouponByUserId(Integer userId);
 

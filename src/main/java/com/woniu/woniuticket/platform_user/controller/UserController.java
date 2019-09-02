@@ -159,6 +159,7 @@ public class UserController {
         if(remember) {
             session.setMaxInactiveInterval(43200);//设置单位为秒，设置为-1永不过期, 这里设置30天
         }
+        System.out.println("session获取:"+session.getAttribute(UserConstant.USER_LOGIN));
         System.out.println("**********登录完成**********");
         return null;
     }

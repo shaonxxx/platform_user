@@ -2,34 +2,38 @@ package com.woniu.woniuticket.platform_user.controller;
 
 
 import com.github.pagehelper.PageInfo;
+import com.woniu.woniuticket.platform_user.constant.UserConstant;
 import com.woniu.woniuticket.platform_user.exception.UserCenterException;
 import com.woniu.woniuticket.platform_user.exception.UserException;
 import com.woniu.woniuticket.platform_user.pojo.User;
 import com.woniu.woniuticket.platform_user.pojo.WalletOrder;
+import com.woniu.woniuticket.platform_user.service.CouponService;
 import com.woniu.woniuticket.platform_user.service.UserService;
 
 import com.woniu.woniuticket.platform_user.service.WalletOrderService;
 import com.woniu.woniuticket.platform_user.vo.UserVo;
-//import org.apache.shiro.authc.UsernamePasswordToken;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import javafx.scene.chart.ValueAxis;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
+
+import org.apache.tomcat.util.json.Token;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletInputStream;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @RestController
 @CrossOrigin
+@Api("用户信息管理")
 public class UserCenterController {
 
     private static final String UPLOAD_FOLDER="/static/img";
@@ -42,30 +46,51 @@ public class UserCenterController {
     UserService userService;
     @Autowired
     WalletOrderService walletOrderService;
+    @Autowired
+    CouponService couponService;
+    @Autowired
+    CouponController couponController;
     /*
     * 查找用户信息
     * @param token
-    * @return 返回s用户对象
+    * @return 返回用户对象
     * */
+/*    @ApiOperation(value = "查找用户信息",notes = "")
+    @GetMapping("/userInfo/{token}")
+    public Map findUserByToken(@PathVariable("token")String token){
+        Map result =new HashMap();
+        System.out.println(token);
+        User user = userService.findUserByName(token);
+        System.out.println(user);
+        result.put("user",user);
+        return  result;
+    }*/
 
-    @GetMapping("/userInfo")
-    public Map findUserByToken(UsernamePasswordToken token){
-      /*  String userName = (String) token.getPrincipal();
-        User user = userService.findUserByName(userName);*/
-      Map result=new HashMap();
-      User user = userService.findUserByUserId(1);
-      result.put("user",user);
-      return  result;
+    /*
+     * 查找用户信息
+     * @param userId
+     * @return 返回用户对象
+     * */
+    @ApiOperation(value = "查找用户信息",notes = "")
+    @GetMapping("/userInfo/{userId}")
+    public Map findUserById(@PathVariable("userId")Integer userId){
+        Map result =new HashMap();
+        System.out.println(userId);
+        User user = userService.findUserByUserId(userId);
+        System.out.println(user);
+        result.put("user",user);
+        return  result;
     }
 
     /*
      * 修改用户头像
-     * @param userId
+     * @param token
      * @param multipartFile
      * @return 返回结果集合
      * */
-    @RequestMapping("/userInfoHeadImg")
-    public Map updateUserHeadImg( UsernamePasswordToken token, MultipartFile multipartFile){
+/*    @ApiOperation(value = "修改用户头像",notes = "")
+    @PutMapping("/userInfoHeadImg/{token}")
+    public Map updateUserHeadImg(@PathVariable("token") String token, @RequestParam("multipartFile") MultipartFile multipartFile){
         Map result=new HashMap();
         String fileName=multipartFile.getOriginalFilename();
         String suffix=fileName.substring(fileName.lastIndexOf("."));
@@ -80,8 +105,44 @@ public class UserCenterController {
             }
             multipartFile.transferTo(new File(file.getAbsoluteFile()+File.separator+newFileName));
             System.out.println(file.getAbsoluteFile()+File.separator+newFileName);
-            User user = userService.findUserByUserId(1);
-            System.out.println(user);
+            User user = userService.findUserByName(token);
+            user.setHeadimg(newFileName);
+            userService.modifyUserInfo(user);
+            result.put("code", 0);
+            result.put("msg", "修改成功");
+            result.put("img",newFileName);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            result.put("code",500);
+            result.put("msg","图片上传失败");
+        }
+        return result;
+    }*/
+
+    /*
+     * 修改用户头像
+     * @param token
+     * @param multipartFile
+     * @return 返回结果集合
+     * */
+    @ApiOperation(value = "修改用户头像",notes = "")
+    @PutMapping("/userInfoHeadImg/{userId}")
+    public Map updateUserHeadImgByUserId(@PathVariable("userId") Integer userId, @RequestParam("multipartFile") MultipartFile multipartFile){
+        Map result=new HashMap();
+        String fileName=multipartFile.getOriginalFilename();
+        String suffix=fileName.substring(fileName.lastIndexOf("."));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String newFileName=dateFormat.format(new Date())+suffix;
+        try {
+            String classPath = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX).getPath();
+            File file=new File(classPath+UPLOAD_FOLDER);
+            System.out.println(file);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+            multipartFile.transferTo(new File(file.getAbsoluteFile()+File.separator+newFileName));
+            System.out.println(file.getAbsoluteFile()+File.separator+newFileName);
+            User user = userService.findUserByUserId(userId);
             user.setHeadimg(newFileName);
             userService.modifyUserInfo(user);
             result.put("code", 0);
@@ -100,7 +161,7 @@ public class UserCenterController {
     * @param userId
     * @return 返回结果集合
     * */
-
+    @ApiOperation(value = "修改用户信息",notes = "")
     @PutMapping("/userInfoModify/{userId}")
     public Map updateUserInfo(@RequestBody User user,@PathVariable("userId")Integer userId){
         System.out.println(userId);
@@ -171,6 +232,9 @@ public class UserCenterController {
         user.setVipActivetime(vipTime.getTime());
         try {
             userService.updateByPrimaryKey(user);
+            for(int i=0;i<4;i++) {
+                couponController.addCoupon(userId);
+            }
             result.put("code",0);
             result.put("msg","会员激活成功");
         } catch (UserCenterException e) {
@@ -192,18 +256,22 @@ public class UserCenterController {
         User user = userService.selectByPrimaryKey(userId);
         Map result=new HashMap();
         //当前时间大于会员有效期，说明会员失效
-        if(new Date().getTime()>user.getVipActivetime().getTime()){
-            user.setVipState(1);
+
             try {
-                userService.updateByPrimaryKey(user);
-                result.put("code",0);
-                result.put("msg","更新会员状态成功");
+                if(new Date().getTime()>user.getVipActivetime().getTime()) {
+                    user.setVipState(1);
+                    userService.updateByPrimaryKey(user);
+                    result.put("code", 0);
+                    result.put("msg", "更新会员状态成功");
+                }else{
+                    result.put("code", 1);
+                    result.put("msg", "会员仍在有效期");
+                }
             } catch (UserCenterException e) {
-                e.printStackTrace();
                 result.put("code", 500);
                 result.put("msg", "更新会员状态失败");
+                e.printStackTrace();
             }
-        }
         return result;
     }
 }

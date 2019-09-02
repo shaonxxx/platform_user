@@ -37,4 +37,8 @@ public class WalletTest {
         walletController.ReduceMoney(1);
     }
 
+    @Test
+    public void testWalletList(){
+        System.out.println(walletController.findWalletOrderListByUserId(1,5,1));
+    }
 }

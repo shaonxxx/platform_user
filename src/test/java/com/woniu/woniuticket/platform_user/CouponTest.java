@@ -52,13 +52,7 @@ public class CouponTest {
     }
 
 
-    @Test
-    public void testFindCoupon(){
-        List<Coupon> couponList = couponDao.selectCouponByUserId(1);
-        for (Coupon coupon : couponList) {
-            System.out.println(coupon.getAmount());
-        }
-    }
+
 
     @Test
     public  void testCount(){

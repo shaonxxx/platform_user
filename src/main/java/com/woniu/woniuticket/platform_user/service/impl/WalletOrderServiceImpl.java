@@ -20,8 +20,8 @@ public class WalletOrderServiceImpl implements WalletOrderService {
     * @return
     * */
     @Override
-    public List<WalletOrder> findOrderByUserId(Integer userId) {
-        return walletOrderDao.selectOrderList(userId);
+    public List<WalletOrder> findOrderByUserId(Integer pageSize,Integer currentPage,Integer userId) {
+        return walletOrderDao.selectOrderList(pageSize,currentPage,userId);
     }
 
     @Override

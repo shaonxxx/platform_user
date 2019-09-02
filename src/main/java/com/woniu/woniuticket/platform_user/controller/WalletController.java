@@ -1,12 +1,14 @@
 package com.woniu.woniuticket.platform_user.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.woniu.woniuticket.platform_user.exception.WalletException;
 import com.woniu.woniuticket.platform_user.pojo.Wallet;
 import com.woniu.woniuticket.platform_user.pojo.WalletOrder;
 import com.woniu.woniuticket.platform_user.service.UserService;
 import com.woniu.woniuticket.platform_user.service.WalletOrderService;
 import com.woniu.woniuticket.platform_user.service.WalletService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,11 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@CrossOrigin
+@Api("用户钱包管理")
 public class WalletController {
+
     @Autowired
     WalletService walletService;
     @Autowired
     WalletOrderService walletOrderService;
+
     /*
     * 查找用户钱包
     * @param userId
@@ -128,9 +134,12 @@ public class WalletController {
     @ApiOperation(value ="获取用户钱包订单列表",notes = "根据url中的用户id查找到钱包订单集合展示")
     @GetMapping("/walletOrderList/{userId}")
     @ResponseBody
-    public List<WalletOrder> findWalletOrderListByUserId(@PathVariable("userId") Integer userId){
-        List<WalletOrder> walletOrderList = walletOrderService.findOrderByUserId(userId);
-        return walletOrderList;
+    public PageInfo<WalletOrder> findWalletOrderListByUserId(@RequestParam(value = "pageSize",defaultValue = "5",required = false)Integer pageSize,
+                                                             @RequestParam(value = "currentPage",defaultValue = "1",required = false)Integer currentPage,
+                                                             @PathVariable("userId") Integer userId){
+        List<WalletOrder> walletOrderList = walletOrderService.findOrderByUserId(pageSize,currentPage,userId);
+        PageInfo<WalletOrder> pageInfo=new PageInfo<>(walletOrderList);
+        return pageInfo;
     }
 
     /*
@@ -182,13 +191,15 @@ public class WalletController {
     * */
     @ApiOperation(value = "生成钱包电影票支付订单",notes = "")
     @PostMapping("/walletTicketOrder/{userId}")
-    public Map createWalletOrder(@PathVariable("userId") @RequestBody Integer userId){
+    public Map createWalletOrder(@PathVariable("userId")  Integer userId,@RequestBody Integer money){
         //订单支付类型 walletOrderType
         //1购票观影支付 余额-
         //2会员充值支付 余额-
         //3余额充入 余额+
+
         WalletOrder walletOrder=new WalletOrder();
         walletOrder.setWalletOrderCreatetime(new Date());
+        walletOrder.setWalletOrderMoney(money);
         walletOrder.setUserId(userId);
         walletOrder.setWalletOrderType(1);
         walletOrder.setWalletOrderState(1);
@@ -216,6 +227,7 @@ public class WalletController {
     @PostMapping("/walletVipOrder/{userId}")
     public Map createVipWalletOrder(@PathVariable("userId") @RequestBody Integer userId){
         WalletOrder walletOrder=new WalletOrder();
+        walletOrder.setWalletOrderMoney(10);
         walletOrder.setWalletOrderCreatetime(new Date());
         walletOrder.setUserId(userId);
         walletOrder.setWalletOrderType(2);
@@ -242,10 +254,11 @@ public class WalletController {
      * */
     @ApiOperation(value = "生成钱包余额充值订单",notes = "")
     @PostMapping("/walletChargeOrder/{userId}")
-    public Map createWalletChargeOrder(@PathVariable("userId") @RequestBody Integer userId){
+    public Map createWalletChargeOrder(@PathVariable("userId")Integer userId,@RequestBody Integer money){
         WalletOrder walletOrder=new WalletOrder();
         walletOrder.setWalletOrderCreatetime(new Date());
         walletOrder.setUserId(userId);
+        walletOrder.setWalletOrderMoney(money);
         walletOrder.setWalletOrderType(3);
         walletOrder.setWalletOrderState(1);
         Map result=new HashMap();
