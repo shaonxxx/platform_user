@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -19,7 +20,8 @@ import java.util.*;
 public class CouponController {
     @Autowired
     CouponService couponService;
-
+    @Autowired
+    RedisTemplate redisTemplate;
     /*
     * 优惠券信息
     * @param couponId
@@ -45,6 +47,7 @@ public class CouponController {
                                            @RequestParam(value = "pageSize",defaultValue = "10",required = false)Integer pageSize,
                                            @RequestParam(value = "currentPage",defaultValue = "1",required = false)Integer currentPage){
         List<Coupon> couponList = couponService.findCouponByUserId(pageSize,currentPage,userId);
+        redisTemplate.opsForList().rightPushAll("couponList",couponList);
         PageInfo<Coupon> pageInfo=new PageInfo<>(couponList);
         return pageInfo;
     }
@@ -130,7 +133,7 @@ public class CouponController {
         Coupon coupon = couponService.findCouponByCouponId(couponId);
         coupon.setState(1);
         try {
-            int code = couponService.modifyCoupon(coupon);
+            couponService.modifyCoupon(coupon);
             result.put("code", 0);
             result.put("msg", "使用成功，优惠券减少");
         } catch (CouponException e) {
@@ -151,7 +154,7 @@ public class CouponController {
     public Map addCoupon(@PathVariable("userId")Integer userId){
         Map result=new HashMap();
         try{
-            int code = couponService.createCoupon(userId);
+            couponService.createCoupon(userId);
             result.put("code", 0);
             result.put("msg", "分享成功，优惠券增加");
         } catch (CouponException e){

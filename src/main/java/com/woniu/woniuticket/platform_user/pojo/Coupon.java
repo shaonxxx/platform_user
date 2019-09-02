@@ -1,8 +1,9 @@
 package com.woniu.woniuticket.platform_user.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Coupon {
+public class Coupon implements Serializable {
     private Integer couponId;
 
     private Integer userId;
